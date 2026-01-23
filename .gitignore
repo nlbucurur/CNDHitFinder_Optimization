@@ -1,0 +1,19 @@
+# ROOT / data
+*.root
+*.hipo
+*.dat
+*.csv
+
+# build
+*.so
+*.o
+*.d
+build/
+out/
+
+# logs
+*.log
+
+# temporary
+*~
+.DS_Store
