@@ -1,8 +1,8 @@
-#ifdef __CLING__
-R__LOAD_LIBRARY(libhpo4)
-#endif
+// #ifdef __CLING__
+// R__LOAD_LIBRARY(libhipo4)
+// #endif
 
-// To run: root -l -b -q 'compare_cnd_versions.C+(100000)'
+// To run: clas12root -l -b -q 'compare_cnd_versions.C+(100000)'
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -96,8 +96,8 @@ Hists book_hists(const char *tag)
     h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 60);
     h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, -180, 180);
 
-    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), TString::Format("#Delta#theta(CND-hit - particle) (%s);#Delta#theta [deg];Counts", tag), 120, -30, 30);
-    h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), TString::Format("#Delta#phi(CND-hit - particle) (%s);#Delta#phi [deg];Counts", tag), 180, -180, 180);
+    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-hit - particle);#Delta#theta [deg];Counts", 120, -30, 30);
+    h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-hit - particle);#Delta#phi [deg];Counts", 180, -180, 180);
 
     h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("p vs #theta (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
                          100, 0, 5, 100, 0, 60);
@@ -378,7 +378,7 @@ void draw_overlay_1D(TH1 *h1_in, TH1 *h2_in, TH1 *h3_in,
     h2->Draw("hist same");
     h3->Draw("hist same");
 
-    auto *leg = new TLegend(0.68, 0.72, 0.92, 0.90);
+    auto *leg = new TLegend(0.30, 0.72, 0.55, 0.90);
     leg->SetBorderSize(0);
     leg->SetFillStyle(0);
     leg->AddEntry(h1, leg1, "l");
