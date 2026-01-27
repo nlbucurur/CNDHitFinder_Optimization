@@ -1,0 +1,783 @@
+========== testOSG ==========
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output0/dst-0.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output0/dst-0.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9767180
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9737164
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output1/dst-1.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output1/dst-1.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9930556
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9900540
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output2/dst-2.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output2/dst-2.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9830192
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9800176
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output3/dst-3.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output3/dst-3.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9816040
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9786024
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output4/dst-4.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output4/dst-4.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9711644
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9681628
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output5/dst-5.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output5/dst-5.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9954564
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9924548
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output6/dst-6.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output6/dst-6.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9917796
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9887780
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output7/dst-7.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output7/dst-7.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9973980
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9943964
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output8/dst-8.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output8/dst-8.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9770296
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9740284
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output9/dst-9.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output9/dst-9.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9881856
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9851840
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output10/dst-10.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output10/dst-10.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9997784
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9967768
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output11/dst-11.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output11/dst-11.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10014064
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9984048
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output12/dst-12.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output12/dst-12.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10042484
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10012468
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output13/dst-13.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output13/dst-13.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9975380
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9945364
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output14/dst-14.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output14/dst-14.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9976276
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9946260
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output15/dst-15.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output15/dst-15.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9820544
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9790528
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output16/dst-16.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output16/dst-16.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9915452
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9885436
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output17/dst-17.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output17/dst-17.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9937336
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9907320
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output18/dst-18.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output18/dst-18.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9785524
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9755508
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testOSG/output19/dst-19.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testOSG/output19/dst-19.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9927444
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9897428
+
+FILE user configuration:
+
+
+========== testCJ0 ==========
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output0/dst-0.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output0/dst-0.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10011224
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9981208
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output1/dst-1.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output1/dst-1.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10108608
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10078592
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output2/dst-2.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output2/dst-2.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10176944
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10146928
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output3/dst-3.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output3/dst-3.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10093704
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10063688
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output4/dst-4.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output4/dst-4.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10219792
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10189776
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output5/dst-5.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output5/dst-5.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10151788
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10121772
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output6/dst-6.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output6/dst-6.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10231620
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10201604
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output7/dst-7.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output7/dst-7.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9671896
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9641880
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output8/dst-8.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output8/dst-8.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10254800
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10224784
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output9/dst-9.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output9/dst-9.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10061340
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10031324
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output10/dst-10.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output10/dst-10.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10078384
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10048368
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output11/dst-11.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output11/dst-11.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10194604
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10164588
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output12/dst-12.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output12/dst-12.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10073276
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10043260
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output13/dst-13.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output13/dst-13.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10212004
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10181988
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output14/dst-14.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output14/dst-14.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10019128
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9989112
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output15/dst-15.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output15/dst-15.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9884768
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9854752
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output16/dst-16.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output16/dst-16.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10128564
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10098548
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output17/dst-17.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output17/dst-17.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9964832
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9934816
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output18/dst-18.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output18/dst-18.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9987764
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9957748
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ0/output19/dst-19.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ0/output19/dst-19.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10120456
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10090440
+
+FILE user configuration:
+
+
+========== testCJ1 ==========
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output0/dst-0.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output0/dst-0.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10306884
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10276868
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output1/dst-1.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output1/dst-1.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10172096
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10142080
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output2/dst-2.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output2/dst-2.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10096760
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10066744
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output3/dst-3.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output3/dst-3.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10163696
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10133680
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output4/dst-4.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output4/dst-4.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10033792
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10003776
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output5/dst-5.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output5/dst-5.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10017264
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9987248
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output6/dst-6.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output6/dst-6.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10238220
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10208204
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output7/dst-7.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output7/dst-7.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10158012
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10127996
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output8/dst-8.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output8/dst-8.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10084560
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10054544
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output9/dst-9.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output9/dst-9.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10129100
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10099084
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output10/dst-10.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output10/dst-10.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10096696
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10066680
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output11/dst-11.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output11/dst-11.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10136904
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10106888
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output12/dst-12.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output12/dst-12.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10049900
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10019884
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output13/dst-13.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output13/dst-13.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10151084
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10121068
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output14/dst-14.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output14/dst-14.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10343704
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10313688
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output15/dst-15.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output15/dst-15.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10113092
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10083076
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output16/dst-16.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output16/dst-16.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10147348
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10117336
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output17/dst-17.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output17/dst-17.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10188768
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10158752
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output18/dst-18.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output18/dst-18.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :     10169628
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =  10139612
+
+FILE user configuration:
+
+
+==================== /work/clas12b/users/lixu/singleParticle/testCJ1/output19/dst-19.hipo ====================
+reader:: *****>>>>> openning file : /work/clas12b/users/lixu/singleParticle/testCJ1/output19/dst-19.hipo
+reader:: ***** dictionary entries :           32
+reader:: ************ file size   :      9879052
+reader:: **** scan trailer #bytes :           88
+reader:: ***** number of  records :            2
+reader:: ***** number of  events  :         5000
+file info: (# records = 2):
+****>>>> index tag :        0, count =         2, entries =      5000, data length =   9849036
+
+FILE user configuration:
+
+
