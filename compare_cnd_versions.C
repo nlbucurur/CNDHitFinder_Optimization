@@ -35,6 +35,7 @@ R__LOAD_LIBRARY(libhpo4)
 #include "hipo4/reader.h"
 #include "hipo4/dictionary.h"
 #include "hipo4/bank.h"
+#include "hipo4/event.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
