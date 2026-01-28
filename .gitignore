@@ -8,6 +8,7 @@
 *.so
 *.o
 *.d
+*.pcm
 build/
 out/
 
