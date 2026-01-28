@@ -1,5 +1,9 @@
 # ROOT / data
+<<<<<<< HEAD
 *.root
+=======
+Histograms/*.root
+>>>>>>> a92ddac (📦️ Add files generated after running CND comparison code)
 *.hipo
 *.dat
 *.csv
@@ -19,5 +23,8 @@ out/
 *~
 .DS_Store
 
+<<<<<<< HEAD
 # ROOT ACLiC generated files
+=======
+>>>>>>> a92ddac (📦️ Add files generated after running CND comparison code)
 compare_cnd_versions_C_ACLiC_*
