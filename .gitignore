@@ -1,5 +1,5 @@
 # ROOT / data
-# *.root
+*.root
 *.hipo
 *.dat
 *.csv
@@ -18,3 +18,6 @@ out/
 # temporary
 *~
 .DS_Store
+
+# ROOT ACLiC generated files
+compare_cnd_versions_C_ACLiC_*
