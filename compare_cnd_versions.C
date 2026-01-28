@@ -1,7 +1,3 @@
-// #ifdef __CLING__
-// R__LOAD_LIBRARY(libhipo4)
-// #endif
-
 // To run: clas12root -l -b -q 'compare_cnd_versions.C+(100000)'
 
 #include <TROOT.h>
@@ -89,7 +85,7 @@ Hists book_hists(const char *tag)
 {
     Hists h;
     h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 5);
-    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 60);
+    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 180);
     h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, -180, 180);
 
     h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 5);
@@ -100,15 +96,15 @@ Hists book_hists(const char *tag)
     h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-hit - particle);#Delta#phi [deg];Counts", 180, -180, 180);
 
     h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("p vs #theta (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
-                         100, 0, 5, 100, 0, 60);
+                         100, 0, 5, 100, 0, 180);
     h.hPPhi = new TH2F(TString::Format("hPPhi_%s", tag), TString::Format("p vs #phi (%s) from REC::Particle;p [GeV];#phi [deg]", tag),
                        100, 0, 5, 100, -180, 180);
     h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#theta vs #phi (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
-                           100, 0, 60, 100, -180, 180);
+                           100, 0, 180, 100, -180, 180);
     return h;
 }
 
-void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 100000, int cnd_id = 3)
+void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300000, int cnd_id = 3)
 {
     if (!chain)
     {
@@ -346,6 +342,8 @@ void draw_overlay_1D(TH1 *h1_in, TH1 *h2_in, TH1 *h3_in,
 {
     if (!h1_in || !h2_in || !h3_in) return;
 
+    gPad->SetLogy();
+
     // Clone so normalization does not permanently change original histograms
     auto *h1 = (TH1*)h1_in->Clone(Form("%s_clone1", h1_in->GetName()));
     auto *h2 = (TH1*)h2_in->Clone(Form("%s_clone2", h2_in->GetName()));
@@ -411,7 +409,7 @@ void draw_triptych_2D(TH2 *h1, TH2 *h2, TH2 *h3,
     c->SaveAs(outname);
 }
 
-void compare_cnd_versions(int maxEvents = 100000)
+void compare_cnd_versions(int maxEvents = 300000)
 {
     // gSystem->Load("libhipo4");
 
@@ -441,13 +439,13 @@ void compare_cnd_versions(int maxEvents = 100000)
     {
         auto *c = new TCanvas("c_particle_1D", "REC::Particle neutrons", 1500, 450);
         c->Divide(3, 1);
-
+        
         c->cd(1);
-        draw_overlay_1D(hOSG.hP, hCJ0.hP, hCJ1.hP, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hP, hCJ0.hP, hCJ1.hP, "OSG", "CJ0", "CJ1", false);
         c->cd(2);
-        draw_overlay_1D(hOSG.hTheta, hCJ0.hTheta, hCJ1.hTheta, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hTheta, hCJ0.hTheta, hCJ1.hTheta, "OSG", "CJ0", "CJ1", false);
         c->cd(3);
-        draw_overlay_1D(hOSG.hPhi, hCJ0.hPhi, hCJ1.hPhi, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hPhi, hCJ0.hPhi, hCJ1.hPhi, "OSG", "CJ0", "CJ1", false);
 
         c->SaveAs("Histograms/cmp_RECParticle_neutrons_1D.png");
     }
@@ -460,12 +458,11 @@ void compare_cnd_versions(int maxEvents = 100000)
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D(hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND, "OSG", "CJ0", "CJ1", false);
         c->cd(2);
-        draw_overlay_1D(hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND, "OSG", "CJ0", "CJ1", false);
         c->cd(3);
-        draw_overlay_1D(hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND, "OSG", "CJ0", "CJ1", true);
-
+        draw_overlay_1D(hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND, "OSG", "CJ0", "CJ1", false);
         c->SaveAs("Histograms/cmp_CND_scint_1D.png");
     }
 
@@ -477,9 +474,9 @@ void compare_cnd_versions(int maxEvents = 100000)
         c->Divide(2, 1);
 
         c->cd(1);
-        draw_overlay_1D(hOSG.hDTheta_CND, hCJ0.hDTheta_CND, hCJ1.hDTheta_CND, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hDTheta_CND, hCJ0.hDTheta_CND, hCJ1.hDTheta_CND, "OSG", "CJ0", "CJ1", false);
         c->cd(2);
-        draw_overlay_1D(hOSG.hDPhi_CND, hCJ0.hDPhi_CND, hCJ1.hDPhi_CND, "OSG", "CJ0", "CJ1", true);
+        draw_overlay_1D(hOSG.hDPhi_CND, hCJ0.hDPhi_CND, hCJ1.hDPhi_CND, "OSG", "CJ0", "CJ1", false);
 
         c->SaveAs("Histograms/cmp_CND_residuals_1D.png");
     }
