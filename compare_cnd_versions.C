@@ -95,12 +95,12 @@ Hists book_hists(const char *tag)
     h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-hit - particle);#Delta#theta [deg];Counts", 120, -30, 30);
     h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-hit - particle);#Delta#phi [deg];Counts", 180, -180, 180);
 
-    h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("p vs #theta (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
-                         100, 0, 5, 100, 0, 180);
-    h.hPPhi = new TH2F(TString::Format("hPPhi_%s", tag), TString::Format("p vs #phi (%s) from REC::Particle;p [GeV];#phi [deg]", tag),
-                       100, 0, 5, 100, -180, 180);
-    h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#theta vs #phi (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
-                           100, 0, 180, 100, -180, 180);
+    h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("#theta vs p (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
+                         300, 0, 10, 300, 0, 180);
+    h.hPPhi = new TH2F(TString::Format("hPPhi_%s", tag), TString::Format("#phi vs p (%s) from REC::Particle;p [GeV];#phi [deg]", tag),
+                       300, 0, 10, 300, -180, 180);
+    h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#phi vs #theta (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
+                           300, 0, 180, 300, -180, 180);
     return h;
 }
 
@@ -393,7 +393,7 @@ void draw_triptych_2D(TH2 *h1, TH2 *h2, TH2 *h3,
     if (!h1 || !h2 || !h3)
         return;
 
-    auto *c = new TCanvas(Form("c2D_%s", outname), title, 1500, 450);
+    auto *c = new TCanvas(Form("c2D_%s", outname), title, 1600, 450);
     c->Divide(3, 1);
 
     c->cd(1);
