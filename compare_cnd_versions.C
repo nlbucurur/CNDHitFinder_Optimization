@@ -93,15 +93,22 @@ struct Hists
 Hists book_hists(const char *tag)
 {
     Hists h;
-    h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 5);
-    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 180);
-    h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, -180, 180);
+    // h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 5);
+    // h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 180);
+    // h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, -180, 180);
+    h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 1.3);
+    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 35, 115);
+    h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, 90, 150);
 
+
+    // h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 12);
+    // h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 180);
+    // h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, -180, 180);
     h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 12);
     h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 180);
-    h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, -180, 180);
+    h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, 90, 150);
 
-    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-hit - particle);#Delta#theta [deg];Counts", 100, -30, 30);
+    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-hit - particle);#Delta#theta [deg];Counts", 100, -180, 180);
     h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-hit - particle);#Delta#phi [deg];Counts", 100, -180, 180);
 
     h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("#theta vs p (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
@@ -111,9 +118,12 @@ Hists book_hists(const char *tag)
     h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#phi vs #theta (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
                            100, 0, 180, 100, -180, 180);
 
-    h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 5);
-    h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 0, 180);
-    h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, -180, 180);
+    // h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 5);
+    // h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 0, 180);
+    // h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, -180, 180);
+    h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 1.3);
+    h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 35, 115);
+    h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, 90, 150);
 
     h.hDTheta_REC_MC = new TH1F(TString::Format("hDTh_REC_MC_%s", tag), "#Delta#theta(REC - MC);#Delta#theta [deg];Counts", 200, -12, 12);
     h.hDPhi_REC_MC = new TH1F(TString::Format("hDPh_REC_MC_%s", tag), "#Delta#phi(REC - MC);#Delta#phi [deg];Counts", 200, -15, 15);
@@ -164,8 +174,8 @@ MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
         const float pz = MCPT.getFloat("pz", imc);
 
         TVector3 pMC(px, py, pz);
-        if (pMC.Mag() < 1e-6)
-            continue; // skip zero-momentum
+        // if (pMC.Mag() < 1e-6)
+        //     continue; // skip zero-momentum
 
         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
 
@@ -358,8 +368,8 @@ void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pt_rec < pt_min)
-                    continue; // too low momentum
+                // if (pt_rec < pt_min)
+                //     continue; // too low momentum
 
                 // if (pREC.Mag() < 1e-6)
                 //     continue; // skip zero-momentum
@@ -464,6 +474,28 @@ void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300
     std::cout << "Processed " << processed << " events for " << tag << std::endl;
 }
 
+void addEntriesColumnMajor(TLegend* leg,
+                           const std::vector<TH1*>& h,
+                           const std::vector<const char*>& labels,
+                           int ncols,
+                           const char* opt = "f")
+{
+    const int n = (int)h.size();
+    const int nrows = (int)std::ceil((double)n / ncols);
+
+    // Column-major order: (row, col) -> i = col*nrows + row
+    // Add in the order: row=0..nrows-1, col=0..ncols-1
+    for (int row = 0; row < nrows; ++row)
+    {
+        for (int col = 0; col < ncols; ++col)
+        {
+            int i = col * nrows + row;
+            if (i >= n) continue;
+            leg->AddEntry(h[i], labels[i], opt);
+        }
+    }
+}
+
 void draw_overlay_1D_N(const std::vector<TH1 *> &h_in,
                        const std::vector<const char *> &labels,
                        bool normalize = true,
@@ -512,8 +544,15 @@ void draw_overlay_1D_N(const std::vector<TH1 *> &h_in,
 
     // Colors (edit as you like)
     const std::vector<int> colors = {
-        kRed, kBlue, kGreen + 2, kMagenta, kOrange - 3, kCyan,
-        kViolet + 1, kGray + 2};
+        kRed,
+        kBlue,
+        kGreen + 2,
+        kMagenta - 8,
+        kOrange - 3,
+        kMagenta + 1,
+        kViolet + 1,
+        kGray + 2
+    };
 
     for (size_t i = 0; i < h.size(); ++i)
     {
@@ -542,9 +581,10 @@ void draw_overlay_1D_N(const std::vector<TH1 *> &h_in,
     leg->SetBorderSize(0);
     leg->SetFillStyle(0);
 
-    for (size_t i = 0; i < h.size(); ++i)
-        leg->AddEntry(h[i], labels[i], "f");
+    // for (size_t i = 0; i < h.size(); ++i)
+    //     leg->AddEntry(h[i], labels[i], "f");
 
+    addEntriesColumnMajor(leg, h, labels, leg_ncols, "f");
     leg->Draw();
 }
 
