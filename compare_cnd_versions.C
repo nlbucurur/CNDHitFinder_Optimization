@@ -164,8 +164,8 @@ MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
         const float pz = MCPT.getFloat("pz", imc);
 
         TVector3 pMC(px, py, pz);
-        if (pMC.Mag() < 1e-6)
-            continue; // skip zero-momentum
+        // if (pMC.Mag() < 1e-6)
+        //     continue; // skip zero-momentum
 
         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
 
@@ -358,8 +358,8 @@ void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pt_rec < pt_min)
-                    continue; // too low momentum
+                // if (pt_rec < pt_min)
+                //     continue; // too low momentum
 
                 MatchResult match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/10.0);
                 if (match.mcIndex < 0)
