@@ -93,20 +93,19 @@ struct Hists
 Hists book_hists(const char *tag)
 {
     Hists h;
-    // h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 5);
-    // h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 180);
-    // h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, -180, 180);
-    h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 1.3);
-    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 35, 115);
-    h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, 90, 150);
+    h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 5);
+    h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 0, 180);
+    h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, -180, 180);
+    // h.hP = new TH1F(TString::Format("hP_%s", tag), TString::Format("Neutron p (%s) from REC::Particle;p [GeV];Counts", tag), 100, 0, 1.3);
+    // h.hTheta = new TH1F(TString::Format("hTh_%s", tag), TString::Format("Neutron #theta (%s) from REC::Particle;#theta [deg];Counts", tag), 100, 35, 115);
+    // h.hPhi = new TH1F(TString::Format("hPhi_%s", tag), TString::Format("Neutron #phi (%s) from REC::Particle;#phi [deg];Counts", tag), 100, 90, 150);
 
-
-    // h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 12);
-    // h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 180);
-    // h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, -180, 180);
     h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 12);
     h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 180);
-    h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, 90, 150);
+    h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, -180, 180);
+    // h.hEnergy_CND = new TH1F(TString::Format("hECND_%s", tag), TString::Format("Neutron E (%s) from CND-hit;E [GeV];Counts", tag), 100, 0, 12);
+    // h.hTheta_CND = new TH1F(TString::Format("hThCND_%s", tag), TString::Format("Neutron #theta (%s) from CND-hit;#theta [deg];Counts", tag), 100, 0, 180);
+    // h.hPhi_CND = new TH1F(TString::Format("hPhiCND_%s", tag), TString::Format("Neutron #phi (%s) from CND-hit;#phi [deg];Counts", tag), 100, 90, 150);
 
     h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-hit - particle);#Delta#theta [deg];Counts", 100, -180, 180);
     h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-hit - particle);#Delta#phi [deg];Counts", 100, -180, 180);
@@ -118,12 +117,12 @@ Hists book_hists(const char *tag)
     h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#phi vs #theta (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
                            100, 0, 180, 100, -180, 180);
 
-    // h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 5);
-    // h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 0, 180);
-    // h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, -180, 180);
-    h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 1.3);
-    h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 35, 115);
-    h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, 90, 150);
+    h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 5);
+    h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 0, 180);
+    h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, -180, 180);
+    // h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 1.3);
+    // h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 35, 115);
+    // h.hPhiMC = new TH1F(TString::Format("hPhiMC_%s", tag), TString::Format("MC Neutron #phi (%s);#phi [deg];Counts", tag), 100, 90, 150);
 
     h.hDTheta_REC_MC = new TH1F(TString::Format("hDTh_REC_MC_%s", tag), "#Delta#theta(REC - MC);#Delta#theta [deg];Counts", 200, -12, 12);
     h.hDPhi_REC_MC = new TH1F(TString::Format("hDPh_REC_MC_%s", tag), "#Delta#phi(REC - MC);#Delta#phi [deg];Counts", 200, -15, 15);
@@ -174,8 +173,8 @@ MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
         const float pz = MCPT.getFloat("pz", imc);
 
         TVector3 pMC(px, py, pz);
-        // if (pMC.Mag() < 1e-6)
-        //     continue; // skip zero-momentum
+        if (pMC.Mag() < 1e-6)
+            continue; // skip zero-momentum
 
         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
 
@@ -368,8 +367,8 @@ void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                // if (pt_rec < pt_min)
-                //     continue; // too low momentum
+                if (pt_rec < pt_min)
+                    continue; // too low momentum
 
                 // if (pREC.Mag() < 1e-6)
                 //     continue; // skip zero-momentum
@@ -474,11 +473,11 @@ void process_chain(TChain *chain, Hists &h, const char *tag, int maxEvents = 300
     std::cout << "Processed " << processed << " events for " << tag << std::endl;
 }
 
-void addEntriesColumnMajor(TLegend* leg,
-                           const std::vector<TH1*>& h,
-                           const std::vector<const char*>& labels,
+void addEntriesColumnMajor(TLegend *leg,
+                           const std::vector<TH1 *> &h,
+                           const std::vector<const char *> &labels,
                            int ncols,
-                           const char* opt = "f")
+                           const char *opt = "f")
 {
     const int n = (int)h.size();
     const int nrows = (int)std::ceil((double)n / ncols);
@@ -490,7 +489,8 @@ void addEntriesColumnMajor(TLegend* leg,
         for (int col = 0; col < ncols; ++col)
         {
             int i = col * nrows + row;
-            if (i >= n) continue;
+            if (i >= n)
+                continue;
             leg->AddEntry(h[i], labels[i], opt);
         }
     }
@@ -551,8 +551,7 @@ void draw_overlay_1D_N(const std::vector<TH1 *> &h_in,
         kOrange - 3,
         kMagenta + 1,
         kViolet + 1,
-        kGray + 2
-    };
+        kGray + 2};
 
     for (size_t i = 0; i < h.size(); ++i)
     {
@@ -648,6 +647,36 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in,
     c->SaveAs(outname);
 }
 
+void print_counts(const char* tag, const Hists& h)
+{
+    auto ll = [](double x){ return (long long) std::llround(x); };
+
+    std::cout << "\n==================== " << tag << " ====================\n";
+
+    std::cout << "REC::Particle neutrons (entries):\n";
+    std::cout << "  hP     : " << ll(h.hP->GetEntries())     << "\n";
+    std::cout << "  hTheta : " << ll(h.hTheta->GetEntries()) << "\n";
+    std::cout << "  hPhi   : " << ll(h.hPhi->GetEntries())   << "\n";
+
+    std::cout << "MC::Particle matched neutrons (entries):\n";
+    std::cout << "  hPMC     : " << ll(h.hPMC->GetEntries())     << "\n";
+    std::cout << "  hThetaMC : " << ll(h.hThetaMC->GetEntries()) << "\n";
+    std::cout << "  hPhiMC   : " << ll(h.hPhiMC->GetEntries())   << "\n";
+
+    std::cout << "Neutrons with a matched CND hit (entries):\n";
+    std::cout << "  hEnergy_CND : " << ll(h.hEnergy_CND->GetEntries()) << "\n";
+    std::cout << "  hTheta_CND  : " << ll(h.hTheta_CND->GetEntries())  << "\n";
+    std::cout << "  hPhi_CND    : " << ll(h.hPhi_CND->GetEntries())    << "\n";
+
+    std::cout << "Residuals (entries):\n";
+    std::cout << "  hDTheta_CND     : " << ll(h.hDTheta_CND->GetEntries())     << "\n";
+    std::cout << "  hDPhi_CND       : " << ll(h.hDPhi_CND->GetEntries())       << "\n";
+    std::cout << "  hDTheta_REC_MC  : " << ll(h.hDTheta_REC_MC->GetEntries())  << "\n";
+    std::cout << "  hDPhi_REC_MC    : " << ll(h.hDPhi_REC_MC->GetEntries())    << "\n";
+    std::cout << "  hAngle_REC_MC   : " << ll(h.hAngle_REC_MC->GetEntries())   << "\n";
+    std::cout << "  hDP_REC_MC      : " << ll(h.hDP_REC_MC->GetEntries())      << "\n";
+}
+
 void compare_cnd_versions(int maxEvents = 300000)
 {
     // gSystem->Load("libhipo4");
@@ -668,6 +697,10 @@ void compare_cnd_versions(int maxEvents = 300000)
     Hists hCJ1 = book_hists("CJ1");
 
     // Fill
+    // int nEvtOSG = process_chain(chOSG, hOSG, "OSG", maxEvents);
+    // int nEvtCJ0 = process_chain(chCJ0, hCJ0, "CJ0", maxEvents);
+    // int nEvtCJ1 = process_chain(chCJ1, hCJ1, "CJ1", maxEvents);
+
     process_chain(chOSG, hOSG, "OSG", maxEvents);
     process_chain(chCJ0, hCJ0, "CJ0", maxEvents);
     process_chain(chCJ1, hCJ1, "CJ1", maxEvents);
@@ -774,14 +807,19 @@ void compare_cnd_versions(int maxEvents = 300000)
 
         fout->Write();
 
-        std::cout << "hPhi_OSG entries = " << hOSG.hPhi->GetEntries()
-                  << "  bin(0) = " << hOSG.hPhi->GetBinContent(hOSG.hPhi->FindBin(0.0))
-                  << std::endl;
+        // std::cout << "hPhi_OSG entries = " << hOSG.hPhi->GetEntries()
+        //           << "  bin(0) = " << hOSG.hPhi->GetBinContent(hOSG.hPhi->FindBin(0.0))
+        //           << std::endl;
 
-        int bx = hOSG.hPPhi->GetXaxis()->FindBin(1e-6); // near p=0
-        int by = hOSG.hPPhi->GetYaxis()->FindBin(0.0);  // phi=0
-        std::cout << "2D bin(p~0,phi=0) = " << hOSG.hPPhi->GetBinContent(bx, by) << "\n";
-        std::cout << "2D integral = " << hOSG.hPPhi->Integral() << "\n";
+        // int bx = hOSG.hPPhi->GetXaxis()->FindBin(1e-6); // near p=0
+        // int by = hOSG.hPPhi->GetYaxis()->FindBin(0.0);  // phi=0
+        // std::cout << "2D bin(p~0,phi=0) = " << hOSG.hPPhi->GetBinContent(bx, by) << "\n";
+        // std::cout << "2D integral = " << hOSG.hPPhi->Integral() << "\n";
+
+
+        print_counts("OSG", hOSG);
+        print_counts("CJ0", hCJ0);
+        print_counts("CJ1", hCJ1);
         fout->Close();
     }
     std::cout << "Done. Wrote PNGs + cmp_cnd_versions_hists.root" << std::endl;
