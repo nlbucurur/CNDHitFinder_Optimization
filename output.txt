@@ -1,0 +1,102 @@
+
+Processing compare_cnd_versions.C+(100000)...
+OSG chain files = 20
+Processed 100000 events for OSG_cal
+Derived dTheta cut from OSG: mean=-2.94675 sigma=21.6613 => |dTheta-mean| < 64.9839 deg
+Processed 100000 events for OSG
+Processed 100000 events for CJ0
+Processed 100000 events for CJ1
+Processed 100000 events for CJ2
+OSG hTheta_CND min angle with content: 37.800000 deg
+CJ0 hTheta_CND min angle with content: 39.600000 deg
+CJ1 hTheta_CND min angle with content: 41.400000 deg
+CJ2 hTheta_CND min angle with content: 39.600000 deg
+Processed 99999 events for CJ0_inOSG
+CJ0_inOSG: scanned=100000
+Processed 99999 events for CJ1_inOSG
+CJ1_inOSG: scanned=100000
+
+==================== OSG ====================
+REC::Particle neutrons (entries):
+  hP     : 9451
+  hTheta : 9451
+  hPhi   : 9451
+MC::Particle matched neutrons (entries):
+  hPMC     : 9451
+  hThetaMC : 9451
+  hPhiMC   : 9451
+Neutrons with a matched CND cluster (entries):
+  hEnergy_CND : 9451
+  hTheta_CND  : 9451
+  hPhi_CND    : 9451
+Residuals (entries):
+  hDTheta_CND     : 9451
+  hDPhi_CND       : 9451
+  hDTheta_REC_MC  : 9451
+  hDPhi_REC_MC    : 9451
+  hAngle_REC_MC   : 9451
+  hDP_REC_MC      : 9451
+
+==================== CJ0 ====================
+REC::Particle neutrons (entries):
+  hP     : 4898
+  hTheta : 4898
+  hPhi   : 4898
+MC::Particle matched neutrons (entries):
+  hPMC     : 4898
+  hThetaMC : 4898
+  hPhiMC   : 4898
+Neutrons with a matched CND cluster (entries):
+  hEnergy_CND : 4898
+  hTheta_CND  : 4898
+  hPhi_CND    : 4898
+Residuals (entries):
+  hDTheta_CND     : 4898
+  hDPhi_CND       : 4898
+  hDTheta_REC_MC  : 4898
+  hDPhi_REC_MC    : 4898
+  hAngle_REC_MC   : 4898
+  hDP_REC_MC      : 4898
+
+==================== CJ1 ====================
+REC::Particle neutrons (entries):
+  hP     : 4789
+  hTheta : 4789
+  hPhi   : 4789
+MC::Particle matched neutrons (entries):
+  hPMC     : 4789
+  hThetaMC : 4789
+  hPhiMC   : 4789
+Neutrons with a matched CND cluster (entries):
+  hEnergy_CND : 4789
+  hTheta_CND  : 4789
+  hPhi_CND    : 4789
+Residuals (entries):
+  hDTheta_CND     : 4789
+  hDPhi_CND       : 4789
+  hDTheta_REC_MC  : 4789
+  hDPhi_REC_MC    : 4789
+  hAngle_REC_MC   : 4789
+  hDP_REC_MC      : 4789
+
+==================== CJ2 ====================
+REC::Particle neutrons (entries):
+  hP     : 5297
+  hTheta : 5297
+  hPhi   : 5297
+MC::Particle matched neutrons (entries):
+  hPMC     : 5297
+  hThetaMC : 5297
+  hPhiMC   : 5297
+Neutrons with a matched CND cluster (entries):
+  hEnergy_CND : 5297
+  hTheta_CND  : 5297
+  hPhi_CND    : 5297
+Residuals (entries):
+  hDTheta_CND     : 5297
+  hDPhi_CND       : 5297
+  hDTheta_REC_MC  : 5297
+  hDPhi_REC_MC    : 5297
+  hAngle_REC_MC   : 5297
+  hDP_REC_MC      : 5297
+Done. Wrote PNGs + cmp_cnd_versions_hists.root

@@ -157,6 +157,57 @@ MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
     return out;
 }
 
+int pick_cnd_row_angle_then_energy(
+    int ip,
+    const std::vector<std::vector<int>> &cndRows,
+    const hipo::bank &SCINT,
+    const TVector3 &pREC,
+    double pvx, double pvy, double pvz,
+    double maxCndAngDeg,
+    bool fallbackToBestE,
+    int bestScRowIp)
+{
+    int bestRow = -1;
+    float bestE = -1.0f;
+    float bestAng = 1e9f;
+
+    if (ip < 0 || ip >= (int)cndRows.size())
+        return -1;
+
+    for (int sc : cndRows[ip])
+    {
+        float x = SCINT.getFloat("x", sc);
+        float y = SCINT.getFloat("y", sc);
+        float z = SCINT.getFloat("z", sc);
+
+        TVector3 dir(x - pvx, y - pvy, z - pvz); // vertex-corrected hit direction
+        if (dir.Mag2() < 1e-12)
+            continue;
+
+        float ang = pREC.Angle(dir) * TMath::RadToDeg();
+        if (ang > maxCndAngDeg)
+            continue;
+
+        float E = SCINT.getFloat("energy", sc);
+
+        // Pick highest energy; tie-breaker: smaller angle
+        if (E > bestE || (E == bestE && ang < bestAng))
+        {
+            bestE = E;
+            bestAng = ang;
+            bestRow = sc;
+        }
+    }
+
+    if (bestRow >= 0)
+        return bestRow;
+
+    // If no candidate passed the angle window:
+    if (fallbackToBestE)
+        return bestScRowIp; // may still be -1
+    return -1;              // strict mode
+}
+
 inline uint32_t parse_dst_index(const char *fname)
 {
     // find the last occurrence of "dst-" and parse the number after it until the next non-digit character
@@ -282,15 +333,15 @@ Hists book_hists(const char *tag)
     h.hCNDLayer_occupancy = new TH1F(TString::Format("hLayerCND_mult_%s", tag), TString::Format("CND layer occupancy (%s) for neutron clusters;Layer;Counts", tag), 3, 0.5, 3.5);
     h.hCND_NLayers = new TH1F(TString::Format("hNLayerCND_%s", tag), TString::Format("Number of CND layers hit (%s) for neutron clusters;N layers;Counts", tag), 3, 0.5, 3.5);
 
-    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-cluster - particle);#Delta#theta [deg];Counts", 100, -50, 50);
-    h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-cluster - particle);#Delta#phi [deg];Counts", 100, -50, 50);
+    h.hDTheta_CND = new TH1F(TString::Format("hDThCND_%s", tag), "#Delta#theta(CND-cluster - particle);#Delta#theta [deg];Counts", 50, -5, 5);
+    h.hDPhi_CND = new TH1F(TString::Format("hDPhCND_%s", tag), "#Delta#phi(CND-cluster - particle);#Delta#phi [deg];Counts", 50, -5, 5);
 
     h.hPTheta = new TH2F(TString::Format("hPTh_%s", tag), TString::Format("#theta vs p (%s) from REC::Particle;p [GeV];#theta [deg]", tag),
-                         100, 0, 10, 10, 0, 180);
+                         100, 0, 10, 100, 0, 180);
     h.hPPhi = new TH2F(TString::Format("hPPhi_%s", tag), TString::Format("#phi vs p (%s) from REC::Particle;p [GeV];#phi [deg]", tag),
-                       100, 0, 10, 10, 0, 361);
+                       100, 0, 10, 100, 0, 361);
     h.hThetaPhi = new TH2F(TString::Format("hThPhi_%s", tag), TString::Format("#phi vs #theta (%s) from REC::Particle;#theta [deg];#phi [deg]", tag),
-                           100, 0, 180, 10, 0, 361);
+                           100, 0, 180, 100, 0, 361);
 
     h.hPMC = new TH1F(TString::Format("hPMC_%s", tag), TString::Format("MC Neutron p (%s);p [GeV];Counts", tag), 100, 0, 5);
     h.hThetaMC = new TH1F(TString::Format("hThMC_%s", tag), TString::Format("MC Neutron #theta (%s);#theta [deg];Counts", tag), 100, 0, 180);
@@ -356,11 +407,21 @@ void process_chain_allow_keys(
         reader.open(fname);
         reader.readDictionary(factory);
 
+        // if (factory.hasSchema("MC::RecMatch"))
+        // {
+        //     std::cout << "\n--- MC::RecMatch schema ---\n";
+        //     factory.getSchema("MC::RecMatch").show();
+        // }
+
         if (!factory.hasSchema("RUN::config") ||
             !factory.hasSchema("REC::Particle") ||
             !factory.hasSchema("REC::Scintillator") ||
             !factory.hasSchema("MC::Particle"))
             continue;
+
+        bool hasRecMatch = factory.hasSchema("MC::RecMatch");
+        hipo::bank RECM(hasRecMatch ? factory.getSchema("MC::RecMatch")
+                                    : factory.getSchema("RUN::config")); // dummy schema if missing
 
         hipo::bank CONF(factory.getSchema("RUN::config"));
         hipo::bank PART(factory.getSchema("REC::Particle"));
@@ -386,6 +447,8 @@ void process_chain_allow_keys(
 
             kept++;
 
+            if (hasRecMatch)
+                event.getStructure(RECM);
             event.getStructure(PART);
             event.getStructure(SCINT);
             event.getStructure(MCPT);
@@ -399,6 +462,8 @@ void process_chain_allow_keys(
             std::vector<int> cndLayerMask(nPart, 0); // bitmask of layers with associated scint hits
 
             // Fill per-particle CND info from scintillator rows (detector == CND)
+            std::vector<std::vector<int>> cndRows(nPart);
+
             for (int sc = 0; sc < nSc; ++sc)
             {
                 const int detector = SCINT.getInt("detector", sc);
@@ -408,6 +473,8 @@ void process_chain_allow_keys(
                 const int pindex = SCINT.getInt("pindex", sc);
                 if (pindex < 0 || pindex >= nPart)
                     continue;
+
+                cndRows[pindex].push_back(sc);
 
                 const float E = SCINT.getFloat("energy", sc);
                 const float t = SCINT.getFloat("time", sc);
@@ -428,6 +495,47 @@ void process_chain_allow_keys(
                     cndLayerMask[pindex] |= (1 << (layer - 1));
                 }
             }
+
+            std::unordered_map<int, int> p2mc;
+            std::unordered_map<int, float> p2q;
+
+            if (hasRecMatch)
+            {
+                const int nRM = RECM.getRows();
+
+                for (int ir = 0; ir < nRM; ++ir)
+                {
+                    const int pidx = RECM.getInt("pindex", ir);
+                    const int mcidx = RECM.getInt("mcindex", ir);
+                    const float quality = RECM.getFloat("quality", ir);
+
+                    if (mcidx < 0)
+                        continue; // ignore unmatched rows
+                    if (quality < 0.5)
+                        continue;
+
+                    // Keep best score if multiple rows map to same pindex
+                    auto itq = p2q.find(pidx);
+                    if (itq == p2q.end() || quality > itq->second)
+                    {
+                        p2q[pidx] = quality;
+                        p2mc[pidx] = mcidx;
+                    }
+                }
+            }
+
+            // static bool once = true;
+            // if (once && hasRecMatch)
+            // {
+            //     std::cout << "RecMatch rows: " << RECM.getRows() << "\n";
+            //     for (int k = 0; k < 5; k++)
+            //     {
+            //         std::cout << "  pindex=" << RECM.getInt("pindex", k)
+            //                   << " mcindex=" << RECM.getInt("mcindex", k)
+            //                   << " quality=" << RECM.getFloat("quality", k) << "\n";
+            //     }
+            //     once = false;
+            // }
 
             // Loop particles and fill neutron hists
             for (int ip = 0; ip < nPart; ++ip)
@@ -454,21 +562,49 @@ void process_chain_allow_keys(
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pREC.Mag() < 1e-6)
+                if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
                     continue; // skip zero-momentum
 
-                MatchResult match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
+                MatchResult match;
+                auto it = p2mc.find(ip);
+
+                if (it != p2mc.end())
+                {
+                    const int mcidx = it->second;
+
+                    // ensure mcidx is valid and points to a neutron
+                    if (mcidx >= 0 && mcidx < MCPT.getRows() && MCPT.getInt("pid", mcidx) == 2112)
+                    {
+                        match.mcIndex = mcidx;
+                        TVector3 pMC(MCPT.getFloat("px", mcidx),
+                                     MCPT.getFloat("py", mcidx),
+                                     MCPT.getFloat("pz", mcidx));
+                        match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
+
+                        if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg)
+                            match.mcIndex = -1;
+                    }
+                }
+
+                // if (match.mcIndex < 0)
+                // {
+                //     match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
+                // }
                 if (match.mcIndex < 0)
                     continue; // no good MC match
+
+                // MatchResult match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
+                // if (match.mcIndex < 0)
+                //     continue; // no good MC match
 
                 const float p_rec = pREC.Mag();
                 const float th_rec = pREC.Theta() * TMath::RadToDeg();
                 const float ph_rec = phi_0_360_deg(pREC.Phi());
 
-                if (std::abs(ph_rec) < 1e-6)
-                {
-                    std::cout << "phi=0: px=" << px << " py=" << py << " pz=" << pz << "\n";
-                }
+                // if (std::abs(ph_rec) < 1e-6)
+                // {
+                //     std::cout << "phi=0: px=" << px << " py=" << py << " pz=" << pz << "\n";
+                // }
 
                 N_Vec_temp.SetPxPyPzE(px, py, pz, TMath::Sqrt(p_rec * p_rec + Nmass * Nmass));
 
@@ -485,9 +621,17 @@ void process_chain_allow_keys(
                 const float dph_rec_mc = TVector2::Phi_mpi_pi((ph_rec - ph_mc) * TMath::DegToRad()) * TMath::RadToDeg();
 
                 // Now fill CND-related info if we have an associated row
-                const int scBest = bestScRow[ip];
+                const bool fallbackToBestE = false; // recommended: keep strict to kill tails
+
+                int scBest = pick_cnd_row_angle_then_energy(
+                    ip, cndRows, SCINT,
+                    pREC, pvx, pvy, pvz,
+                    /*maxCndAngDeg=*/maxAngleDeg,
+                    fallbackToBestE,
+                    bestScRow[ip]);
+
                 if (scBest < 0)
-                    continue;
+                    continue; // no good CND cluster for this neutron
 
                 if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
                     continue;
@@ -514,12 +658,26 @@ void process_chain_allow_keys(
                 const float z = SCINT.getFloat("z", scBest);
 
                 TVector3 r(x, y, z);
-                const float th_cluster = r.Theta() * TMath::RadToDeg();
-                const float ph_cluster = phi_0_360_deg(r.Phi());
+                TVector3 dir = r - TVector3(pvx, pvy, pvz); // vertex-corrected
+                const float th_cluster = dir.Theta() * TMath::RadToDeg();
+                const float ph_cluster = phi_0_360_deg(dir.Phi());
 
                 // Delta phi with wrapping
                 const float dth = th_cluster - th_rec;
                 const float dph = TVector2::Phi_mpi_pi((ph_cluster - ph_rec) * TMath::DegToRad()) * TMath::RadToDeg();
+
+                // if (pREC.Mag() < 0.30)
+                // {
+                //     float th_mc_dbg = th_mc;
+                //     float ph_mc_dbg = ph_mc;
+                //     std::cout
+                //         << "LOW-P survivor: p_rec=" << p_rec
+                //         << " th_rec=" << th_rec << " ph_rec=" << ph_rec
+                //         << " |  th_mc=" << th_mc_dbg << " ph_mc=" << ph_mc_dbg
+                //         << " | angle=" << match.angleDeg
+                //         << " | quality=" << p2q[ip]
+                //         << "\n";
+                // }
 
                 h.hP->Fill(p_rec);
                 h.hTheta->Fill(th_rec);
@@ -555,7 +713,8 @@ void process_chain_allow_keys(
     std::cout << tag << ": scanned=" << scanned << "\n";
 }
 
-void process_chain(TChain *chain, Hists &h,
+void process_chain(TChain *chain,
+                   Hists &h,
                    const char *tag,
                    int maxEvents = 300000,
                    int cnd_id = 3,
@@ -596,6 +755,14 @@ void process_chain(TChain *chain, Hists &h,
         reader.open(fname);
         reader.readDictionary(factory);
 
+        // static bool printedRM = false;
+        // if (factory.hasSchema("MC::RecMatch") && !printedRM)
+        // {
+        //     std::cout << "\n--- MC::RecMatch schema ---\n";
+        //     factory.getSchema("MC::RecMatch").show();
+        //     printedRM = true;
+        // }
+
         uint32_t dst = parse_dst_index(fname);
 
         // Check required banks
@@ -608,6 +775,10 @@ void process_chain(TChain *chain, Hists &h,
                       << " for " << tag << std::endl;
             continue;
         }
+
+        bool hasRecMatch = factory.hasSchema("MC::RecMatch");
+        hipo::bank RECM(hasRecMatch ? factory.getSchema("MC::RecMatch")
+                                    : factory.getSchema("RUN::config")); // dummy schema if missing
 
         hipo::bank CONF(factory.getSchema("RUN::config"));
         hipo::bank PART(factory.getSchema("REC::Particle"));
@@ -636,6 +807,8 @@ void process_chain(TChain *chain, Hists &h,
             event.getStructure(PART);
             event.getStructure(SCINT);
             event.getStructure(MCPT);
+            if (hasRecMatch)
+                event.getStructure(RECM);
             // if (hasScintX) event.getStructure(SCINTX);
 
             const int nPart = PART.getRows();
@@ -672,6 +845,8 @@ void process_chain(TChain *chain, Hists &h,
             // std::vector<double> part_ScintX_CND_layermult(nPart, NAN);
 
             // Fill per-particle CND info from scintillator rows (detector == CND)
+            std::vector<std::vector<int>> cndRows(nPart);
+
             for (int sc = 0; sc < nSc; ++sc)
             {
                 const int detector = SCINT.getInt("detector", sc);
@@ -681,6 +856,8 @@ void process_chain(TChain *chain, Hists &h,
                 const int pindex = SCINT.getInt("pindex", sc);
                 if (pindex < 0 || pindex >= nPart)
                     continue;
+
+                cndRows[pindex].push_back(sc);
 
                 const float E = SCINT.getFloat("energy", sc);
                 const float t = SCINT.getFloat("time", sc);
@@ -724,6 +901,48 @@ void process_chain(TChain *chain, Hists &h,
                 // }
             }
 
+            std::unordered_map<int, int> p2mc;
+            std::unordered_map<int, float> p2q;
+
+            if (hasRecMatch)
+            {
+                const int nRM = RECM.getRows();
+
+                for (int ir = 0; ir < nRM; ++ir)
+                {
+                    const int pidx = RECM.getInt("pindex", ir);
+                    const int mcidx = RECM.getInt("mcindex", ir);
+                    const float quality = RECM.getFloat("quality", ir);
+
+                    if (mcidx < 0)
+                        continue; // ignore unmatched rows
+
+                    if (quality < 0.5)
+                        continue;
+
+                    // Keep best score if multiple rows map to same pindex
+                    auto itq = p2q.find(pidx);
+                    if (itq == p2q.end() || quality > itq->second)
+                    {
+                        p2q[pidx] = quality;
+                        p2mc[pidx] = mcidx;
+                    }
+                }
+            }
+
+            // static bool once = true;
+            // if (once && hasRecMatch)
+            // {
+            //     std::cout << "RecMatch rows: " << RECM.getRows() << "\n";
+            //     for (int k = 0; k < 5; k++)
+            //     {
+            //         std::cout << "  pindex=" << RECM.getInt("pindex", k)
+            //                   << " mcindex=" << RECM.getInt("mcindex", k)
+            //                   << " quality=" << RECM.getFloat("quality", k) << "\n";
+            //     }
+            //     once = false;
+            // }
+
             // Loop particles and fill neutron hists
             for (int ip = 0; ip < nPart; ++ip)
             {
@@ -749,10 +968,35 @@ void process_chain(TChain *chain, Hists &h,
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pREC.Mag() < 1e-6)
+                if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
                     continue; // skip zero-momentum
 
-                MatchResult match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
+                // First try truth link
+                MatchResult match;
+                auto it = p2mc.find(ip);
+
+                if (it != p2mc.end())
+                {
+                    const int mcidx = it->second;
+
+                    // ensure mcidx is valid and points to a neutron
+                    if (mcidx >= 0 && mcidx < MCPT.getRows() && MCPT.getInt("pid", mcidx) == 2112)
+                    {
+                        match.mcIndex = mcidx;
+                        TVector3 pMC(MCPT.getFloat("px", mcidx),
+                                     MCPT.getFloat("py", mcidx),
+                                     MCPT.getFloat("pz", mcidx));
+                        match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
+
+                        if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg)
+                            match.mcIndex = -1;
+                    }
+                }
+
+                // if (match.mcIndex < 0)
+                // {
+                //     match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
+                // }
                 if (match.mcIndex < 0)
                     continue; // no good MC match
 
@@ -760,10 +1004,10 @@ void process_chain(TChain *chain, Hists &h,
                 const float th_rec = pREC.Theta() * TMath::RadToDeg();
                 const float ph_rec = phi_0_360_deg(pREC.Phi());
 
-                if (std::abs(ph_rec) < 1e-6)
-                {
-                    std::cout << "phi=0: px=" << px << " py=" << py << " pz=" << pz << "\n";
-                }
+                // if (std::abs(ph_rec) < 1e-6)
+                // {
+                //     std::cout << "phi=0: px=" << px << " py=" << py << " pz=" << pz << "\n";
+                // }
 
                 N_Vec_temp.SetPxPyPzE(px, py, pz, TMath::Sqrt(p_rec * p_rec + Nmass * Nmass));
 
@@ -800,9 +1044,19 @@ void process_chain(TChain *chain, Hists &h,
                 const float dph_rec_mc = TVector2::Phi_mpi_pi((ph_rec - ph_mc) * TMath::DegToRad()) * TMath::RadToDeg();
 
                 // Now fill CND-related info if we have an associated row
-                const int scBest = bestScRow[ip];
+                // Now fill CND-related info if we have an associated row
+                const bool fallbackToBestE = false; // recommended: keep strict to kill tails
+                // const double maxCndAngDeg = 15.0;
+
+                int scBest = pick_cnd_row_angle_then_energy(
+                    ip, cndRows, SCINT,
+                    pREC, pvx, pvy, pvz,
+                    /*maxCndAngDeg=*/maxAngleDeg,
+                    fallbackToBestE,
+                    bestScRow[ip]);
+
                 if (scBest < 0)
-                    continue;
+                    continue; // no good CND cluster for this neutron
 
                 if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
                     continue;
@@ -829,12 +1083,26 @@ void process_chain(TChain *chain, Hists &h,
                 const float z = SCINT.getFloat("z", scBest);
 
                 TVector3 r(x, y, z);
-                const float th_cluster = r.Theta() * TMath::RadToDeg();
-                const float ph_cluster = phi_0_360_deg(r.Phi());
+                TVector3 dir = r - TVector3(pvx, pvy, pvz); // vertex-corrected
+                const float th_cluster = dir.Theta() * TMath::RadToDeg();
+                const float ph_cluster = phi_0_360_deg(dir.Phi());
 
                 // Delta phi with wrapping
                 const float dth = th_cluster - th_rec;
                 const float dph = TVector2::Phi_mpi_pi((ph_cluster - ph_rec) * TMath::DegToRad()) * TMath::RadToDeg();
+
+                if ((tag == nullptr || std::string(tag) != "OSG_cal") && (pREC.Mag() < 1e-6 || pREC.Theta() * TMath::RadToDeg() < 1e-6 || phi_0_360_deg(pREC.Phi()) < 1e-6))
+                {
+                    float th_mc_dbg = th_mc;
+                    float ph_mc_dbg = ph_mc;
+                    std::cout
+                        << "LOW-P survivor: p_rec=" << p_rec
+                        << " th_rec=" << th_rec << " ph_rec=" << ph_rec
+                        << " |  th_mc=" << th_mc_dbg << " ph_mc=" << ph_mc_dbg
+                        << " | angle=" << match.angleDeg
+                        << " | quality=" << p2q[ip]
+                        << "\n";
+                }
 
                 h.hP->Fill(p_rec);
                 h.hTheta->Fill(th_rec);
@@ -1027,8 +1295,10 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in, TH2 *h4_in,
 
     c->cd(1);
     gPad->SetRightMargin(0.14);
+    // set z max range user 10^3
     if (logz)
         gPad->SetLogz();
+    h1->SetMaximum(1e3);
     h1->SetStats(0);
     h1->Draw("colz");
 
@@ -1036,6 +1306,7 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in, TH2 *h4_in,
     gPad->SetRightMargin(0.14);
     if (logz)
         gPad->SetLogz();
+    h2->SetMaximum(1e3);
     h2->SetStats(0);
     h2->Draw("colz");
 
@@ -1043,6 +1314,7 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in, TH2 *h4_in,
     gPad->SetRightMargin(0.14);
     if (logz)
         gPad->SetLogz();
+    h3->SetMaximum(1e3);
     h3->SetStats(0);
     h3->Draw("colz");
 
@@ -1050,6 +1322,7 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in, TH2 *h4_in,
     gPad->SetRightMargin(0.14);
     if (logz)
         gPad->SetLogz();
+    h4->SetMaximum(1e3);
     h4->SetStats(0);
     h4->Draw("colz");
 
@@ -1097,7 +1370,6 @@ TH1F *make_diff_hist(const TH1F *hOSG, const TH1F *hCJ, const char *name)
     return h;
 }
 
-
 void compare_cnd_versions(int maxEvents = 300000)
 {
     // gSystem->Load("libhipo4");
@@ -1131,11 +1403,26 @@ void compare_cnd_versions(int maxEvents = 300000)
     std::cout << "Derived dTheta cut from OSG: mean=" << thCut.mean
               << " sigma=" << thCut.sigma
               << " => |dTheta-mean| < " << (thCut.nsigma * thCut.sigma) << " deg\n";
+    if (!thCut.valid)
+    {
+        std::cout << "WARNING: thCut invalid (fit failed or low stats). No dTheta cut will be applied.\n";
+    }
+
+    // GaussCut thCut1;
+    // thCut1.mean = -6.28171;
+    // thCut1.sigma = 20.1061; // default to 2 deg if fit failed or low stats
+    // thCut1.nsigma = 3.0;
+    // thCut1.valid = true;
 
     process_chain(chOSG, hOSG, "OSG", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
     process_chain(chCJ0, hCJ0, "CJ0", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
     process_chain(chCJ1, hCJ1, "CJ1", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
     process_chain(chCJ2, hCJ2, "CJ2", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
+
+    // process_chain(chOSG, hOSG, "OSG", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, /*dThetaCut=*/nullptr);
+    // process_chain(chCJ0, hCJ0, "CJ0", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, /*dThetaCut=*/nullptr);
+    // process_chain(chCJ1, hCJ1, "CJ1", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, /*dThetaCut=*/nullptr);
+    // process_chain(chCJ2, hCJ2, "CJ2", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, /*dThetaCut=*/nullptr);
 
     // --- Bin-by-bin differences (OSG - CJ)
     auto *dE_CJ0 = make_diff_hist(hOSG.hEnergy_CND, hCJ0.hEnergy_CND, "dE_OSG_minus_CJ0");
@@ -1344,6 +1631,10 @@ void compare_cnd_versions(int maxEvents = 300000)
         fout->cd("CJ1");
         write_hists(hCJ1);
 
+        fout->mkdir("CJ2");
+        fout->cd("CJ2");
+        write_hists(hCJ2);
+
         fout->mkdir("CJ0_inOSG");
         fout->cd("CJ0_inOSG");
         write_hists(hCJ0_inOSG);
@@ -1358,14 +1649,20 @@ void compare_cnd_versions(int maxEvents = 300000)
             dE_CJ0->Write();
         if (dE_CJ1)
             dE_CJ1->Write();
+        if (dE_CJ2)
+            dE_CJ2->Write();
         if (dTh_CJ0)
             dTh_CJ0->Write();
         if (dTh_CJ1)
             dTh_CJ1->Write();
+        if (dTh_CJ2)
+            dTh_CJ2->Write();
         if (dPh_CJ0)
             dPh_CJ0->Write();
         if (dPh_CJ1)
             dPh_CJ1->Write();
+        if (dPh_CJ2)
+            dPh_CJ2->Write();
 
         fout->Write();
 
@@ -1378,9 +1675,10 @@ void compare_cnd_versions(int maxEvents = 300000)
         // std::cout << "2D bin(p~0,phi=0) = " << hOSG.hPPhi->GetBinContent(bx, by) << "\n";
         // std::cout << "2D integral = " << hOSG.hPPhi->Integral() << "\n";
 
-        // print_counts("OSG", hOSG);
-        // print_counts("CJ0", hCJ0);
-        // print_counts("CJ1", hCJ1);
+        print_counts("OSG", hOSG);
+        print_counts("CJ0", hCJ0);
+        print_counts("CJ1", hCJ1);
+        print_counts("CJ2", hCJ2);
         fout->Close();
     }
     std::cout << "Done. Wrote PNGs + cmp_cnd_versions_hists.root" << std::endl;
