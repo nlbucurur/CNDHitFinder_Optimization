@@ -986,23 +986,25 @@ void draw_overlay_1D_N(const std::vector<TH1 *> &h_in,
 }
 
 // Helper: draw 3 TH2 side-by-side
-void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in,
+void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in, TH2 *h4_in,
                       const char *title,
                       const char *outname,
                       bool normalize = true,
                       bool logz = true)
 {
-    if (!h1_in || !h2_in || !h3_in)
+    if (!h1_in || !h2_in || !h3_in || !h4_in)
         return;
 
     // Clone to avoid modifying originals
     auto *h1 = (TH2 *)h1_in->Clone(Form("%s_clone1", h1_in->GetName()));
     auto *h2 = (TH2 *)h2_in->Clone(Form("%s_clone2", h2_in->GetName()));
     auto *h3 = (TH2 *)h3_in->Clone(Form("%s_clone3", h3_in->GetName()));
+    auto *h4 = (TH2 *)h4_in->Clone(Form("%s_clone4", h4_in->GetName()));
 
     h1->SetDirectory(nullptr);
     h2->SetDirectory(nullptr);
     h3->SetDirectory(nullptr);
+    h4->SetDirectory(nullptr);
 
     // Optional normalization (global integral)
     if (normalize)
@@ -1013,13 +1015,15 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in,
             h2->Scale(1.0 / h2->Integral());
         if (h3->Integral() > 0)
             h3->Scale(1.0 / h3->Integral());
+        if (h4->Integral() > 0)
+            h4->Scale(1.0 / h4->Integral());
     }
 
     // gPad->Modified();
     // gPad->Update();
 
-    auto *c = new TCanvas(Form("c2D_%s", outname), title, 1800, 450);
-    c->Divide(3, 1);
+    auto *c = new TCanvas(Form("c2D_%s", outname), title, 1800, 900);
+    c->Divide(2, 2);
 
     c->cd(1);
     gPad->SetRightMargin(0.14);
@@ -1041,6 +1045,13 @@ void draw_triptych_2D(TH2 *h1_in, TH2 *h2_in, TH2 *h3_in,
         gPad->SetLogz();
     h3->SetStats(0);
     h3->Draw("colz");
+
+    c->cd(4);
+    gPad->SetRightMargin(0.14);
+    if (logz)
+        gPad->SetLogz();
+    h4->SetStats(0);
+    h4->Draw("colz");
 
     c->SaveAs(outname);
 }
@@ -1100,11 +1111,13 @@ void compare_cnd_versions(int maxEvents = 300000)
     TChain *chOSG = make_chain(BASE, "testOSG");
     TChain *chCJ0 = make_chain(BASE, "testCJ0");
     TChain *chCJ1 = make_chain(BASE, "testCJ1");
+    TChain *chCJ2 = make_chain(BASE, "testCJ2");
 
     // Book hists
     Hists hOSG = book_hists("OSG");
     Hists hCJ0 = book_hists("CJ0");
     Hists hCJ1 = book_hists("CJ1");
+    Hists hCJ2 = book_hists("CJ2");
 
     std::cout << "OSG chain files = "
               << (chOSG->GetListOfFiles() ? chOSG->GetListOfFiles()->GetEntries() : -1)
@@ -1122,34 +1135,39 @@ void compare_cnd_versions(int maxEvents = 300000)
     process_chain(chOSG, hOSG, "OSG", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
     process_chain(chCJ0, hCJ0, "CJ0", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
     process_chain(chCJ1, hCJ1, "CJ1", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
+    process_chain(chCJ2, hCJ2, "CJ2", maxEvents, /*cnd_id*/ 3, /*maxAngleDeg=*/10, &thCut);
 
     // --- Bin-by-bin differences (OSG - CJ)
     auto *dE_CJ0 = make_diff_hist(hOSG.hEnergy_CND, hCJ0.hEnergy_CND, "dE_OSG_minus_CJ0");
     auto *dE_CJ1 = make_diff_hist(hOSG.hEnergy_CND, hCJ1.hEnergy_CND, "dE_OSG_minus_CJ1");
+    auto *dE_CJ2 = make_diff_hist(hOSG.hEnergy_CND, hCJ2.hEnergy_CND, "dE_OSG_minus_CJ2");
 
     auto *dTh_CJ0 = make_diff_hist(hOSG.hTheta_CND, hCJ0.hTheta_CND, "dTh_OSG_minus_CJ0");
     auto *dTh_CJ1 = make_diff_hist(hOSG.hTheta_CND, hCJ1.hTheta_CND, "dTh_OSG_minus_CJ1");
+    auto *dTh_CJ2 = make_diff_hist(hOSG.hTheta_CND, hCJ2.hTheta_CND, "dTh_OSG_minus_CJ2");
 
     auto *dPh_CJ0 = make_diff_hist(hOSG.hPhi_CND, hCJ0.hPhi_CND, "dPh_OSG_minus_CJ0");
     auto *dPh_CJ1 = make_diff_hist(hOSG.hPhi_CND, hCJ1.hPhi_CND, "dPh_OSG_minus_CJ1");
+    auto *dPh_CJ2 = make_diff_hist(hOSG.hPhi_CND, hCJ2.hPhi_CND, "dPh_OSG_minus_CJ2");
 
     // print hOSG.hTheta_CND minumum angle bin with non-zero content
     printf("OSG hTheta_CND min angle with content: %f deg\n", hOSG.hTheta_CND->GetXaxis()->GetBinLowEdge(hOSG.hTheta_CND->FindFirstBinAbove(0)));
     printf("CJ0 hTheta_CND min angle with content: %f deg\n", hCJ0.hTheta_CND->GetXaxis()->GetBinLowEdge(hCJ0.hTheta_CND->FindFirstBinAbove(0)));
     printf("CJ1 hTheta_CND min angle with content: %f deg\n", hCJ1.hTheta_CND->GetXaxis()->GetBinLowEdge(hCJ1.hTheta_CND->FindFirstBinAbove(0)));
+    printf("CJ2 hTheta_CND min angle with content: %f deg\n", hCJ2.hTheta_CND->GetXaxis()->GetBinLowEdge(hCJ2.hTheta_CND->FindFirstBinAbove(0)));
 
     {
         auto *c = new TCanvas("c_diff", "OSG - CJ bin-by-bin differences and originals", 1800, 450);
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND, dE_CJ0, dE_CJ1}, {"OSG", "CJ0", "CJ1", "OSG - CJ0", "OSG - CJ1"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND E difference (bin-by-bin);E [GeV];counts");
+        draw_overlay_1D_N({hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND, hCJ2.hEnergy_CND, dE_CJ0, dE_CJ1, dE_CJ2}, {"OSG", "CJ0", "CJ1", "CJ2", "OSG - CJ0", "OSG - CJ1", "OSG - CJ2"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND E difference (bin-by-bin);E [GeV];counts");
 
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND, dTh_CJ0, dTh_CJ1}, {"OSG", "CJ0", "CJ1", "OSG - CJ0", "OSG - CJ1"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND #theta difference (bin-by-bin);#theta [deg];counts");
+        draw_overlay_1D_N({hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND, hCJ2.hTheta_CND, dTh_CJ0, dTh_CJ1, dTh_CJ2}, {"OSG", "CJ0", "CJ1", "CJ2", "OSG - CJ0", "OSG - CJ1", "OSG - CJ2"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND #theta difference (bin-by-bin);#theta [deg];counts");
 
         c->cd(3);
-        draw_overlay_1D_N({hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND, dPh_CJ0, dPh_CJ1}, {"OSG", "CJ0", "CJ1", "OSG - CJ0", "OSG - CJ1"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND #phi difference (bin-by-bin);#phi [deg];counts");
+        draw_overlay_1D_N({hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND, hCJ2.hPhi_CND, dPh_CJ0, dPh_CJ1, dPh_CJ2}, {"OSG", "CJ0", "CJ1", "CJ2", "OSG - CJ0", "OSG - CJ1", "OSG - CJ2"}, /*normalize=*/false, /*logy=*/true, /*legend box*/ 0.12, 0.75, 0.55, 0.90, /*ncols=*/2, "CND #phi difference (bin-by-bin);#phi [deg];counts");
 
         c->SaveAs("Histograms/cmp_CND_scint_diff_binbybin_all.png");
     }
@@ -1161,11 +1179,11 @@ void compare_cnd_versions(int maxEvents = 300000)
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hP, hCJ0.hP, hCJ1.hP, hOSG.hPMC, hCJ0.hPMC, hCJ1.hPMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron p from REC::Particle and MC::Particle;p [GeV];Counts");
+        draw_overlay_1D_N({hOSG.hP, hCJ0.hP, hCJ1.hP, hCJ2.hP, hOSG.hPMC, hCJ0.hPMC, hCJ1.hPMC, hCJ2.hPMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "CJ2 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle", "CJ2 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron p from REC::Particle and MC::Particle;p [GeV];Counts");
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hTheta, hCJ0.hTheta, hCJ1.hTheta, hOSG.hThetaMC, hCJ0.hThetaMC, hCJ1.hThetaMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron #theta from REC::Particle and MC::Particle;#theta [deg];Counts");
+        draw_overlay_1D_N({hOSG.hTheta, hCJ0.hTheta, hCJ1.hTheta, hCJ2.hTheta, hOSG.hThetaMC, hCJ0.hThetaMC, hCJ1.hThetaMC, hCJ2.hThetaMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "CJ2 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle", "CJ2 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron #theta from REC::Particle and MC::Particle;#theta [deg];Counts");
         c->cd(3);
-        draw_overlay_1D_N({hOSG.hPhi, hCJ0.hPhi, hCJ1.hPhi, hOSG.hPhiMC, hCJ0.hPhiMC, hCJ1.hPhiMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron #phi from REC::Particle and MC::Particle;#phi [deg];Counts");
+        draw_overlay_1D_N({hOSG.hPhi, hCJ0.hPhi, hCJ1.hPhi, hCJ2.hPhi, hOSG.hPhiMC, hCJ0.hPhiMC, hCJ1.hPhiMC, hCJ2.hPhiMC}, {"OSG REC::Particle", "CJ0 REC::Particle", "CJ1 REC::Particle", "CJ2 REC::Particle", "OSG MC::Particle", "CJ0 MC::Particle", "CJ1 MC::Particle", "CJ2 MC::Particle"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.12, 0.75, 0.83, 0.90, /*ncols=*/2, "Neutron #phi from REC::Particle and MC::Particle;#phi [deg];Counts");
         c->SaveAs("Histograms/cmp_RECParticle_MCParticle_neutrons_1D.png");
     }
 
@@ -1177,11 +1195,11 @@ void compare_cnd_versions(int maxEvents = 300000)
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron E from CND-cluster;E [GeV];Counts");
+        draw_overlay_1D_N({hOSG.hEnergy_CND, hCJ0.hEnergy_CND, hCJ1.hEnergy_CND, hCJ2.hEnergy_CND}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron E from CND-cluster;E [GeV];Counts");
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron #theta from CND-cluster;#theta [deg];Counts");
+        draw_overlay_1D_N({hOSG.hTheta_CND, hCJ0.hTheta_CND, hCJ1.hTheta_CND, hCJ2.hTheta_CND}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron #theta from CND-cluster;#theta [deg];Counts");
         c->cd(3);
-        draw_overlay_1D_N({hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron #phi from CND-cluster;#phi [deg];Counts");
+        draw_overlay_1D_N({hOSG.hPhi_CND, hCJ0.hPhi_CND, hCJ1.hPhi_CND, hCJ2.hPhi_CND}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/true, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1, "Neutron #phi from CND-cluster;#phi [deg];Counts");
         c->SaveAs("Histograms/cmp_CND_scint_1D.png");
     }
 
@@ -1193,9 +1211,9 @@ void compare_cnd_versions(int maxEvents = 300000)
         c->Divide(2, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hDTheta_CND, hCJ0.hDTheta_CND, hCJ1.hDTheta_CND}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
+        draw_overlay_1D_N({hOSG.hDTheta_CND, hCJ0.hDTheta_CND, hCJ1.hDTheta_CND, hCJ2.hDTheta_CND}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hDPhi_CND, hCJ0.hDPhi_CND, hCJ1.hDPhi_CND}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
+        draw_overlay_1D_N({hOSG.hDPhi_CND, hCJ0.hDPhi_CND, hCJ1.hDPhi_CND, hCJ2.hDPhi_CND}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
 
         c->SaveAs("Histograms/cmp_CND_residuals_1D.png");
     }
@@ -1208,11 +1226,11 @@ void compare_cnd_versions(int maxEvents = 300000)
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hDP_REC_MC, hCJ0.hDP_REC_MC, hCJ1.hDP_REC_MC}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
+        draw_overlay_1D_N({hOSG.hDP_REC_MC, hCJ0.hDP_REC_MC, hCJ1.hDP_REC_MC, hCJ2.hDP_REC_MC}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hDTheta_REC_MC, hCJ0.hDTheta_REC_MC, hCJ1.hDTheta_REC_MC}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
+        draw_overlay_1D_N({hOSG.hDTheta_REC_MC, hCJ0.hDTheta_REC_MC, hCJ1.hDTheta_REC_MC, hCJ2.hDTheta_REC_MC}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
         c->cd(3);
-        draw_overlay_1D_N({hOSG.hDPhi_REC_MC, hCJ0.hDPhi_REC_MC, hCJ1.hDPhi_REC_MC}, {"OSG", "CJ0", "CJ1"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
+        draw_overlay_1D_N({hOSG.hDPhi_REC_MC, hCJ0.hDPhi_REC_MC, hCJ1.hDPhi_REC_MC, hCJ2.hDPhi_REC_MC}, {"OSG", "CJ0", "CJ1", "CJ2"}, /*normalize =*/false, /*logy =*/false, /*legend box*/ 0.15, 0.72, 0.35, 0.90, /*ncols=*/1);
         c->SaveAs("Histograms/cmp_residuals_MC_1D.png");
     }
 
@@ -1224,23 +1242,23 @@ void compare_cnd_versions(int maxEvents = 300000)
         c->Divide(3, 1);
 
         c->cd(1);
-        draw_overlay_1D_N({hOSG.hCNDLayer, hCJ0.hCNDLayer, hCJ1.hCNDLayer},
-                          {"OSG", "CJ0", "CJ1"},
+        draw_overlay_1D_N({hOSG.hCNDLayer, hCJ0.hCNDLayer, hCJ1.hCNDLayer, hCJ2.hCNDLayer},
+                          {"OSG", "CJ0", "CJ1", "CJ2"},
                           /*normalize=*/false,
                           /*logy=*/true,
                           0.15, 0.72, 0.35, 0.90, 1,
                           "CND layer for matched neutrons;layer;Counts");
 
         c->cd(2);
-        draw_overlay_1D_N({hOSG.hCNDLayer_occupancy, hCJ0.hCNDLayer_occupancy, hCJ1.hCNDLayer_occupancy},
-                          {"OSG", "CJ0", "CJ1"},
+        draw_overlay_1D_N({hOSG.hCNDLayer_occupancy, hCJ0.hCNDLayer_occupancy, hCJ1.hCNDLayer_occupancy, hCJ2.hCNDLayer_occupancy},
+                          {"OSG", "CJ0", "CJ1", "CJ2"},
                           /*normalize=*/false,
                           /*logy=*/true,
                           0.15, 0.72, 0.35, 0.90, 1,
                           "CND layer occupancy for matched neutrons;layer;Counts");
         c->cd(3);
-        draw_overlay_1D_N({hOSG.hCND_NLayers, hCJ0.hCND_NLayers, hCJ1.hCND_NLayers},
-                          {"OSG", "CJ0", "CJ1"},
+        draw_overlay_1D_N({hOSG.hCND_NLayers, hCJ0.hCND_NLayers, hCJ1.hCND_NLayers, hCJ2.hCND_NLayers},
+                          {"OSG", "CJ0", "CJ1", "CJ2"},
                           /*normalize=*/false,
                           /*logy=*/true,
                           0.15, 0.72, 0.35, 0.90, 1,
@@ -1291,14 +1309,15 @@ void compare_cnd_versions(int maxEvents = 300000)
     // ------------------------------------------------------------
     // 7) 2D histograms (triptychs)
     // ------------------------------------------------------------
-    draw_triptych_2D(hOSG.hPTheta, hCJ0.hPTheta, hCJ1.hPTheta,
+    draw_triptych_2D(hOSG.hPTheta, hCJ0.hPTheta, hCJ1.hPTheta, hCJ2.hPTheta,
                      "p vs theta (REC::Particle)", "Histograms/cmp_2D_p_vs_theta.png",
                      /*normalize =*/false, /*logz =*/true);
 
-    draw_triptych_2D(hOSG.hPPhi, hCJ0.hPPhi, hCJ1.hPPhi,
+    draw_triptych_2D(hOSG.hPPhi, hCJ0.hPPhi, hCJ1.hPPhi, hCJ2.hPPhi,
                      "p vs phi (REC::Particle)", "Histograms/cmp_2D_p_vs_phi.png",
                      /*normalize =*/false, /*logz =*/true);
-    draw_triptych_2D(hOSG.hThetaPhi, hCJ0.hThetaPhi, hCJ1.hThetaPhi,
+
+    draw_triptych_2D(hOSG.hThetaPhi, hCJ0.hThetaPhi, hCJ1.hThetaPhi, hCJ2.hThetaPhi,
                      "theta vs phi (REC::Particle)", "Histograms/cmp_2D_theta_vs_phi.png",
                      /*normalize =*/false, /*logz =*/true);
 
