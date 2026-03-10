@@ -142,7 +142,7 @@ MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
 
         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
 
-        if (ang < out.angleDeg)
+        if (ang < out.angleDeg && ang != 0.0f)
         {
             out.angleDeg = ang;
             out.mcIndex = imc;
@@ -185,13 +185,13 @@ int pick_cnd_row_angle_then_energy(
             continue;
 
         float ang = pREC.Angle(dir) * TMath::RadToDeg();
-        // if (ang > maxCndAngDeg)
-        //     continue;
+        if (ang > maxCndAngDeg)
+            continue;
 
         float E = SCINT.getFloat("energy", sc);
 
         // Pick highest energy; tie-breaker: smaller angle
-        if (E > bestE || (E == bestE && ang < bestAng))
+        if (E > bestE || (E == bestE && ang < bestAng && ang != 0.0f))
         {
             bestE = E;
             bestAng = ang;
@@ -511,8 +511,8 @@ void process_chain_allow_keys(
 
                     if (mcidx < 0)
                         continue; // ignore unmatched rows
-                    // if (quality < 0.5)
-                    //     continue;
+                    if (quality < 0.5)
+                        continue;
 
                     // Keep best score if multiple rows map to same pindex
                     auto itq = p2q.find(pidx);
@@ -581,8 +581,8 @@ void process_chain_allow_keys(
                                      MCPT.getFloat("pz", mcidx));
                         match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
 
-                        // if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg)
-                        //     match.mcIndex = -1;
+                        if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg && match.angleDeg != 0.0f)
+                            match.mcIndex = -1;
                     }
                 }
 
@@ -590,8 +590,8 @@ void process_chain_allow_keys(
                 // {
                 //     match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
                 // }
-                // if (match.mcIndex < 0)
-                //     continue; // no good MC match
+                if (match.mcIndex < 0)
+                    continue; // no good MC match
 
                 // MatchResult match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
                 // if (match.mcIndex < 0)
@@ -630,11 +630,11 @@ void process_chain_allow_keys(
                     fallbackToBestE,
                     bestScRow[ip]);
 
-                // if (scBest < 0)
-                //     continue; // no good CND cluster for this neutron
+                if (scBest < 0)
+                    continue; // no good CND cluster for this neutron
 
-                // if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
-                //     continue;
+                if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
+                    continue;
 
                 const int layerBest = SCINT.getInt("layer", scBest);
                 h.hCNDLayer->Fill(layerBest);
@@ -917,8 +917,8 @@ void process_chain(TChain *chain,
                     if (mcidx < 0)
                         continue; // ignore unmatched rows
 
-                    // if (quality < 0.5)
-                    //     continue;
+                    if (quality < 0.5)
+                        continue;
 
                     // Keep best score if multiple rows map to same pindex
                     auto itq = p2q.find(pidx);
@@ -988,8 +988,8 @@ void process_chain(TChain *chain,
                                      MCPT.getFloat("pz", mcidx));
                         match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
 
-                        // if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg)
-                        //     match.mcIndex = -1;
+                        if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg && match.angleDeg != 0.0f)
+                            match.mcIndex = -1;
                     }
                 }
 
@@ -997,8 +997,8 @@ void process_chain(TChain *chain,
                 // {
                 //     match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
                 // }
-                // if (match.mcIndex < 0)
-                //     continue; // no good MC match
+                if (match.mcIndex < 0)
+                    continue; // no good MC match
 
                 const float p_rec = pREC.Mag();
                 const float th_rec = pREC.Theta() * TMath::RadToDeg();
@@ -1055,11 +1055,11 @@ void process_chain(TChain *chain,
                     fallbackToBestE,
                     bestScRow[ip]);
 
-                // if (scBest < 0)
-                //     continue; // no good CND cluster for this neutron
+                if (scBest < 0)
+                    continue; // no good CND cluster for this neutron
 
-                // if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
-                //     continue;
+                if (dThetaCut && !pass_gauss_cut(dth_rec_mc, *dThetaCut))
+                    continue;
 
                 const int layerBest = SCINT.getInt("layer", scBest);
                 h.hCNDLayer->Fill(layerBest);
