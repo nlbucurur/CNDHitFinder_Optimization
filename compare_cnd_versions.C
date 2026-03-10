@@ -1,4 +1,4 @@
-// To run: clas12root -l -b -q 'compare_cnd_versions.C+(100000)'
+// To run: clas12root -l -b -q 'compare_cnd_versions.C+(100000)' > output.txt
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -562,8 +562,8 @@ void process_chain_allow_keys(
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
-                    continue; // skip zero-momentum
+                // if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
+                //     continue; // skip zero-momentum
 
                 MatchResult match;
                 auto it = p2mc.find(ip);
@@ -811,6 +811,49 @@ void process_chain(TChain *chain,
                 event.getStructure(RECM);
             // if (hasScintX) event.getStructure(SCINTX);
 
+            if (dst == 0 && EventNumber == 5) {
+                std::cout << "\n=== DEBUG EVENT INSIDE MACRO ===\n";
+                std::cout << "file=" << fname << "\n";
+                std::cout << "run=" << RunNumber << " event=" << EventNumber << "\n";
+                std::cout << "REC::Particle rows=" << PART.getRows() << "\n";
+
+                for (int j = 0; j < PART.getRows(); ++j) {
+                    std::cout << "row " << j
+                              << " pid=" << PART.getInt("pid", j)
+                              << " px=" << PART.getFloat("px", j)
+                              << " py=" << PART.getFloat("py", j)
+                              << " pz=" << PART.getFloat("pz", j)
+                              << " vx=" << PART.getFloat("vx", j)
+                              << " vy=" << PART.getFloat("vy", j)
+                              << " vz=" << PART.getFloat("vz", j)
+                              << " beta=" << PART.getFloat("beta", j)
+                              << " chi2pid=" << PART.getFloat("chi2pid", j)
+                              << " status=" << PART.getInt("status", j)
+                              << "\n";
+                }
+
+                if (hasRecMatch) {
+                    std::cout << "MC::RecMatch rows=" << RECM.getRows() << "\n";
+                    for (int j = 0; j < RECM.getRows(); ++j) {
+                        std::cout << "RM row " << j
+                                  << " pindex=" << RECM.getInt("pindex", j)
+                                  << " mcindex=" << RECM.getInt("mcindex", j)
+                                  << " quality=" << RECM.getFloat("quality", j)
+                                  << "\n";
+                    }
+                }
+
+                std::cout << "MC::Particle rows=" << MCPT.getRows() << "\n";
+                for (int j = 0; j < MCPT.getRows(); ++j) {
+                    std::cout << "MC row " << j
+                            << " pid=" << MCPT.getInt("pid", j)
+                            << " px=" << MCPT.getFloat("px", j)
+                            << " py=" << MCPT.getFloat("py", j)
+                            << " pz=" << MCPT.getFloat("pz", j)
+                            << "\n";
+                }
+        }
+
             const int nPart = PART.getRows();
             const int nSc = SCINT.getRows();
             const int nMC = MCPT.getRows();
@@ -968,8 +1011,8 @@ void process_chain(TChain *chain,
                 TVector3 pREC(px, py, pz);
                 const float pt_rec = std::sqrt(px * px + py * py);
 
-                if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
-                    continue; // skip zero-momentum
+                // if (pREC.Mag() < 1e-6 && pREC.Theta() * TMath::RadToDeg() < 1e-6 && phi_0_360_deg(pREC.Phi()) < 1e-6)
+                //     continue; // skip zero-momentum
 
                 // First try truth link
                 MatchResult match;
@@ -1101,6 +1144,20 @@ void process_chain(TChain *chain,
                         << " |  th_mc=" << th_mc_dbg << " ph_mc=" << ph_mc_dbg
                         << " | angle=" << match.angleDeg
                         << " | quality=" << p2q[ip]
+                        << "\n";
+                    std::cout
+                        << " tag: " << tag
+                        << " file=" << fname
+                        << " | EventKey: dst= " << dst << " evn=" << EventNumber
+                        << " | Run=" << RunNumber
+                        << " | particle index=" << ip
+                        << " | pid=" << pid
+                        << " | rec p=" << p_rec
+                        << " | rec th=" << th_rec
+                        << " | ph=" << ph_rec
+                        << "\n";
+                    std::cout
+                        << "REC::Particle rows=" << nPart
                         << "\n";
                 }
 
