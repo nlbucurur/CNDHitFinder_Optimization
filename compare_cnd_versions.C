@@ -208,8 +208,8 @@ std::unordered_map<int, int> build_best_rec_per_mc_map(const hipo::bank &PART,
 
         TVector3 pREC(px, py, pz);
 
-        // if (pREC.Mag() < pMin)
-        //     continue; // skip zero-momentum
+        if (pREC.Mag() < pMin)
+            continue; // skip zero-momentum
 
         TVector3 pMC(MCPT.getFloat("px", mcidx),
                      MCPT.getFloat("py", mcidx),
@@ -261,8 +261,8 @@ int pick_cnd_row_angle_then_energy(
         float z = SCINT.getFloat("z", sc);
 
         TVector3 dir(x - pvx, y - pvy, z - pvz); // vertex-corrected hit direction
-        // if (dir.Mag2() < 1e-6)
-        //     continue;
+        if (dir.Mag2() < 1e-6)
+            continue;
 
         float ang = pREC.Angle(dir) * TMath::RadToDeg();
         if (ang > maxCndAngDeg)
@@ -884,53 +884,53 @@ void process_chain(TChain *chain,
                 event.getStructure(RECM);
             // if (hasScintX) event.getStructure(SCINTX);
 
-            if (dst == 0 && EventNumber == 5)
-            {
-                std::cout << "\n=== DEBUG EVENT INSIDE MACRO ===\n";
-                std::cout << "file=" << fname << "\n";
-                std::cout << "run=" << RunNumber << " event=" << EventNumber << "\n";
-                std::cout << "REC::Particle rows=" << PART.getRows() << "\n";
+            // if (dst == 0 && EventNumber == 5)
+            // {
+            //     std::cout << "\n=== DEBUG EVENT INSIDE MACRO ===\n";
+            //     std::cout << "file=" << fname << "\n";
+            //     std::cout << "run=" << RunNumber << " event=" << EventNumber << "\n";
+            //     std::cout << "REC::Particle rows=" << PART.getRows() << "\n";
 
-                for (int j = 0; j < PART.getRows(); ++j)
-                {
-                    std::cout << "row " << j
-                              << " pid=" << PART.getInt("pid", j)
-                              << " px=" << PART.getFloat("px", j)
-                              << " py=" << PART.getFloat("py", j)
-                              << " pz=" << PART.getFloat("pz", j)
-                              << " vx=" << PART.getFloat("vx", j)
-                              << " vy=" << PART.getFloat("vy", j)
-                              << " vz=" << PART.getFloat("vz", j)
-                              << " beta=" << PART.getFloat("beta", j)
-                              << " chi2pid=" << PART.getFloat("chi2pid", j)
-                              << " status=" << PART.getInt("status", j)
-                              << "\n";
-                }
+            //     for (int j = 0; j < PART.getRows(); ++j)
+            //     {
+            //         std::cout << "row " << j
+            //                   << " pid=" << PART.getInt("pid", j)
+            //                   << " px=" << PART.getFloat("px", j)
+            //                   << " py=" << PART.getFloat("py", j)
+            //                   << " pz=" << PART.getFloat("pz", j)
+            //                   << " vx=" << PART.getFloat("vx", j)
+            //                   << " vy=" << PART.getFloat("vy", j)
+            //                   << " vz=" << PART.getFloat("vz", j)
+            //                   << " beta=" << PART.getFloat("beta", j)
+            //                   << " chi2pid=" << PART.getFloat("chi2pid", j)
+            //                   << " status=" << PART.getInt("status", j)
+            //                   << "\n";
+            //     }
 
-                if (hasRecMatch)
-                {
-                    std::cout << "MC::RecMatch rows=" << RECM.getRows() << "\n";
-                    for (int j = 0; j < RECM.getRows(); ++j)
-                    {
-                        std::cout << "RM row " << j
-                                  << " pindex=" << RECM.getInt("pindex", j)
-                                  << " mcindex=" << RECM.getInt("mcindex", j)
-                                  << " quality=" << RECM.getFloat("quality", j)
-                                  << "\n";
-                    }
-                }
+            //     if (hasRecMatch)
+            //     {
+            //         std::cout << "MC::RecMatch rows=" << RECM.getRows() << "\n";
+            //         for (int j = 0; j < RECM.getRows(); ++j)
+            //         {
+            //             std::cout << "RM row " << j
+            //                       << " pindex=" << RECM.getInt("pindex", j)
+            //                       << " mcindex=" << RECM.getInt("mcindex", j)
+            //                       << " quality=" << RECM.getFloat("quality", j)
+            //                       << "\n";
+            //         }
+            //     }
 
-                std::cout << "MC::Particle rows=" << MCPT.getRows() << "\n";
-                for (int j = 0; j < MCPT.getRows(); ++j)
-                {
-                    std::cout << "MC row " << j
-                              << " pid=" << MCPT.getInt("pid", j)
-                              << " px=" << MCPT.getFloat("px", j)
-                              << " py=" << MCPT.getFloat("py", j)
-                              << " pz=" << MCPT.getFloat("pz", j)
-                              << "\n";
-                }
-            }
+            //     std::cout << "MC::Particle rows=" << MCPT.getRows() << "\n";
+            //     for (int j = 0; j < MCPT.getRows(); ++j)
+            //     {
+            //         std::cout << "MC row " << j
+            //                   << " pid=" << MCPT.getInt("pid", j)
+            //                   << " px=" << MCPT.getFloat("px", j)
+            //                   << " py=" << MCPT.getFloat("py", j)
+            //                   << " pz=" << MCPT.getFloat("pz", j)
+            //                   << "\n";
+            //     }
+            // }
 
             const int nPart = PART.getRows();
             const int nSc = SCINT.getRows();
@@ -1380,9 +1380,14 @@ void print_counts(const char *tag, const Hists &h)
 
     std::cout << "\n==================== " << tag << " ====================\n";
 
+    // count only REC neutrons whose reconstructed theta lies between 40 and 120 deg
+    int bin40 = h.hTheta->FindBin(40.0);
+    int bin120 = h.hTheta->FindBin(120.0);
+    double thetaWindow = h.hTheta->Integral(bin40, bin120);
+
     std::cout << "REC::Particle neutrons (entries):\n";
     std::cout << "  hP     : " << ll(h.hP->GetEntries()) << "\n";
-    std::cout << "  hTheta : " << ll(h.hTheta->GetEntries()) << "\n";
+    std::cout << "  hTheta (40<θ<120): " << ll(thetaWindow) << "\n"; // keep original for MC match counts
     std::cout << "  hPhi   : " << ll(h.hPhi->GetEntries()) << "\n";
 
     std::cout << "MC::Particle matched neutrons (entries):\n";
