@@ -121,38 +121,118 @@ struct MatchResult
     float angleDeg = 1e9;
 };
 
-MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
-                                    const hipo::bank &MCPT,
-                                    float maxAngleDeg = 10.0)
+// MatchResult match_neutron_rec_to_mc(const TVector3 &pREC,
+//                                     const hipo::bank &MCPT,
+//                                     float maxAngleDeg = 10.0)
+// {
+//     MatchResult out;
+
+//     const int nMC = MCPT.getRows();
+//     for (int imc = 0; imc < nMC; ++imc)
+//     {
+//         const int pid = MCPT.getInt("pid", imc);
+//         if (pid != 2112)
+//             continue; // neutron
+
+//         const float px = MCPT.getFloat("px", imc);
+//         const float py = MCPT.getFloat("py", imc);
+//         const float pz = MCPT.getFloat("pz", imc);
+
+//         TVector3 pMC(px, py, pz);
+
+//         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
+
+//         if (ang < out.angleDeg && ang != 0.0f)
+//         {
+//             out.angleDeg = ang;
+//             out.mcIndex = imc;
+//         }
+//     }
+
+//     if (out.mcIndex >= 0 && out.angleDeg > maxAngleDeg)
+//     {
+//         // No good match found
+//         out.mcIndex = -1;
+//     }
+//     return out;
+// }
+
+struct BestRecForMC
 {
-    MatchResult out;
+    int pidx = -1;
+    float score = 1e30f;   // smaller is better (e.g. angle)
+    float quality = -1.0f; // auxiliary info, e.g. from MC::RecMatch bank
+};
 
+std::unordered_map<int, int> build_best_rec_per_mc_map(const hipo::bank &PART,
+                                                       const hipo::bank &MCPT,
+                                                       const hipo::bank &RECM,
+                                                       bool hasRecMatch,
+                                                       float qualityMin = 0.5f,
+                                                       float pMin = 1e-6f)
+{
+    std::unordered_map<int, BestRecForMC> bestRec; // mcIndex -> (best pindex, score, quality)
+    std::unordered_map<int, int> out;              // mcIndex -> best pindex pidx
+
+    if (!hasRecMatch)
+        return out;
+    const int nRM = RECM.getRows();
     const int nMC = MCPT.getRows();
-    for (int imc = 0; imc < nMC; ++imc)
+    const int nPart = PART.getRows();
+
+    for (int ir = 0; ir < nRM; ++ir)
     {
-        const int pid = MCPT.getInt("pid", imc);
-        if (pid != 2112)
-            continue; // neutron
+        const int pidx = RECM.getInt("pindex", ir);
+        const int mcidx = RECM.getInt("mcindex", ir);
+        const float quality = RECM.getFloat("quality", ir);
 
-        const float px = MCPT.getFloat("px", imc);
-        const float py = MCPT.getFloat("py", imc);
-        const float pz = MCPT.getFloat("pz", imc);
+        if (pidx < 0 || pidx >= nPart || mcidx < 0 || mcidx >= nMC)
+            continue; // sanity check
 
-        TVector3 pMC(px, py, pz);
+        if (mcidx < 0 || mcidx >= nMC)
+            continue; // ignore unmatched rows
 
+        if (quality < qualityMin)
+            continue; // ignore low-quality matches
+
+        // keep only neutron <-> neutron matches
+
+        if (PART.getInt("pid", pidx) != 2112)
+            continue;
+        if (MCPT.getInt("pid", mcidx) != 2112)
+            continue;
+
+        const float px = PART.getFloat("px", pidx);
+        const float py = PART.getFloat("py", pidx);
+        const float pz = PART.getFloat("pz", pidx);
+
+        TVector3 pREC(px, py, pz);
+
+        // if (pREC.Mag() < pMin)
+        //     continue; // skip zero-momentum
+
+        TVector3 pMC(MCPT.getFloat("px", mcidx),
+                     MCPT.getFloat("py", mcidx),
+                     MCPT.getFloat("pz", mcidx));
+
+        // score: smaller is better
+
+        const float dP = (pREC - pMC).Mag();
         const float ang = pREC.Angle(pMC) * TMath::RadToDeg();
 
-        if (ang < out.angleDeg && ang != 0.0f)
+        // prioritize momentum closeness, then quality as tie-breaker
+        const float score = dP + 0.005f * ang;
+
+        auto it = bestRec.find(mcidx);
+        if (it == bestRec.end() || score < it->second.score || (score == it->second.score && quality > it->second.quality))
         {
-            out.angleDeg = ang;
-            out.mcIndex = imc;
+            bestRec[mcidx] = {pidx, score, quality};
         }
     }
 
-    if (out.mcIndex >= 0 && out.angleDeg > maxAngleDeg)
+    for (const auto &kv : bestRec)
     {
-        // No good match found
-        out.mcIndex = -1;
+        out[kv.first] = kv.second.pidx; // mcIndex -> best pindex
     }
     return out;
 }
@@ -181,8 +261,8 @@ int pick_cnd_row_angle_then_energy(
         float z = SCINT.getFloat("z", sc);
 
         TVector3 dir(x - pvx, y - pvy, z - pvz); // vertex-corrected hit direction
-        if (dir.Mag2() < 1e-12)
-            continue;
+        // if (dir.Mag2() < 1e-6)
+        //     continue;
 
         float ang = pREC.Angle(dir) * TMath::RadToDeg();
         if (ang > maxCndAngDeg)
@@ -744,9 +824,6 @@ void process_chain(TChain *chain,
     hipo::event event;
 
     TLorentzVector N_Vec_temp;
-    // vector<TLorentzVector> N_Vec_;
-    // vector<double> N_info_temp;
-    // vector<vector<double>> N_info_;
 
     for (int fi = 0; fi <= files->GetLast(); ++fi)
     {
@@ -785,10 +862,6 @@ void process_chain(TChain *chain,
         hipo::bank SCINT(factory.getSchema("REC::Scintillator"));
         hipo::bank MCPT(factory.getSchema("MC::Particle"));
 
-        // bool hasScintX = factory.hasSchema("REC::ScintExtras");
-        // hipo::bank SCINTX(hasScintX ? factory.getSchema("REC::ScintExtras")
-        //                             : factory.getSchema("REC::Scintillator"));
-
         while (reader.next())
         {
             reader.read(event);
@@ -811,13 +884,15 @@ void process_chain(TChain *chain,
                 event.getStructure(RECM);
             // if (hasScintX) event.getStructure(SCINTX);
 
-            if (dst == 0 && EventNumber == 5) {
+            if (dst == 0 && EventNumber == 5)
+            {
                 std::cout << "\n=== DEBUG EVENT INSIDE MACRO ===\n";
                 std::cout << "file=" << fname << "\n";
                 std::cout << "run=" << RunNumber << " event=" << EventNumber << "\n";
                 std::cout << "REC::Particle rows=" << PART.getRows() << "\n";
 
-                for (int j = 0; j < PART.getRows(); ++j) {
+                for (int j = 0; j < PART.getRows(); ++j)
+                {
                     std::cout << "row " << j
                               << " pid=" << PART.getInt("pid", j)
                               << " px=" << PART.getFloat("px", j)
@@ -832,9 +907,11 @@ void process_chain(TChain *chain,
                               << "\n";
                 }
 
-                if (hasRecMatch) {
+                if (hasRecMatch)
+                {
                     std::cout << "MC::RecMatch rows=" << RECM.getRows() << "\n";
-                    for (int j = 0; j < RECM.getRows(); ++j) {
+                    for (int j = 0; j < RECM.getRows(); ++j)
+                    {
                         std::cout << "RM row " << j
                                   << " pindex=" << RECM.getInt("pindex", j)
                                   << " mcindex=" << RECM.getInt("mcindex", j)
@@ -844,48 +921,24 @@ void process_chain(TChain *chain,
                 }
 
                 std::cout << "MC::Particle rows=" << MCPT.getRows() << "\n";
-                for (int j = 0; j < MCPT.getRows(); ++j) {
+                for (int j = 0; j < MCPT.getRows(); ++j)
+                {
                     std::cout << "MC row " << j
-                            << " pid=" << MCPT.getInt("pid", j)
-                            << " px=" << MCPT.getFloat("px", j)
-                            << " py=" << MCPT.getFloat("py", j)
-                            << " pz=" << MCPT.getFloat("pz", j)
-                            << "\n";
+                              << " pid=" << MCPT.getInt("pid", j)
+                              << " px=" << MCPT.getFloat("px", j)
+                              << " py=" << MCPT.getFloat("py", j)
+                              << " pz=" << MCPT.getFloat("pz", j)
+                              << "\n";
                 }
-        }
+            }
 
             const int nPart = PART.getRows();
             const int nSc = SCINT.getRows();
             const int nMC = MCPT.getRows();
-            // const int nScX = hasScintX ? SCINTX.getRows() : 0;
-
-            // // Build a fast lookup for ScintExtras by "index" if possible
-            // std::map<int, int> scintX_by_index;
-            // if (hasScintX && nScX > 0)
-            // {
-            //     // Many CLAS12 banks use "index" to link related rows.
-            //     // If SCINTX does not have "index", this will need adjustment.
-            //     for (int ix = 0; ix < nScX; ++ix)
-            //     {
-            //         if (SCINTX.getSchema().hasEntry("index"))
-            //         {
-            //             scintX_by_index[SCINTX.getInt("index", ix)] = ix;
-            //         }
-            //     }
-            // }
 
             std::vector<int> bestScRow(nPart, -1);
             std::vector<float> bestE(nPart, -1.0f);
             std::vector<int> cndLayerMask(nPart, 0); // bitmask of layers with associated scint hits
-
-            // std::vector<double> part_Scint_CND_E(nPart, NAN);
-            // std::vector<double> part_Scint_CND_t(nPart, NAN);
-            // std::vector<double> part_Scint_CND_x(nPart, NAN);
-            // std::vector<double> part_Scint_CND_y(nPart, NAN);
-            // std::vector<double> part_Scint_CND_z(nPart, NAN);
-            // std::vector<double> part_ScintX_CND_dedx(nPart, NAN);
-            // std::vector<double> part_ScintX_CND_size(nPart, NAN);
-            // std::vector<double> part_ScintX_CND_layermult(nPart, NAN);
 
             // Fill per-particle CND info from scintillator rows (detector == CND)
             std::vector<std::vector<int>> cndRows(nPart);
@@ -920,57 +973,17 @@ void process_chain(TChain *chain,
                 {
                     cndLayerMask[pindex] |= (1 << (layer - 1));
                 }
-                // part_Scint_CND_E[pindex] = SCINT.getFloat("energy", sc);
-                // part_Scint_CND_t[pindex] = SCINT.getFloat("time", sc);
-                // part_Scint_CND_x[pindex] = SCINT.getFloat("x", sc);
-                // part_Scint_CND_y[pindex] = SCINT.getFloat("y", sc);
-                // part_Scint_CND_z[pindex] = SCINT.getFloat("z", sc);
-
-                // Extras: try to match by "index" if both have it
-                // if (hasScintX && SCINT.getSchema().hasEntry("index") && SCINTX.getSchema().hasEntry("index"))
-                // {
-                //     const int idx = SCINT.getInt("index", sc);
-                //     auto it = scintX_by_index.find(idx);
-                //     if (it != scintX_by_index.end())
-                //     {
-                //         const int ix = it->second;
-                //         if (SCINTX.getSchema().hasEntry("dedx"))
-                //             cndDedx[pindex] = SCINTX.getFloat("dedx", ix);
-                //         if (SCINTX.getSchema().hasEntry("size"))
-                //             cndSize[pindex] = SCINTX.getInt("size", ix);
-                //         if (SCINTX.getSchema().hasEntry("layermult"))
-                //             cndLayermult[pindex] = SCINTX.getInt("layermult", ix);
-                //     }
-                // }
             }
 
-            std::unordered_map<int, int> p2mc;
-            std::unordered_map<int, float> p2q;
+            auto bestRecPerMC = build_best_rec_per_mc_map(PART, MCPT, RECM, hasRecMatch, /*qualityMin=*/0.5f, /*pMin=*/1e-6f);
 
-            if (hasRecMatch)
+            // for the unoque winners
+            std::unordered_map<int, int> bestMCForRec; // key: pindex, value: mcindex
+            for (const auto &kv : bestRecPerMC)
             {
-                const int nRM = RECM.getRows();
-
-                for (int ir = 0; ir < nRM; ++ir)
-                {
-                    const int pidx = RECM.getInt("pindex", ir);
-                    const int mcidx = RECM.getInt("mcindex", ir);
-                    const float quality = RECM.getFloat("quality", ir);
-
-                    if (mcidx < 0)
-                        continue; // ignore unmatched rows
-
-                    if (quality < 0.5)
-                        continue;
-
-                    // Keep best score if multiple rows map to same pindex
-                    auto itq = p2q.find(pidx);
-                    if (itq == p2q.end() || quality > itq->second)
-                    {
-                        p2q[pidx] = quality;
-                        p2mc[pidx] = mcidx;
-                    }
-                }
+                int mcIdx = kv.first;
+                const int pidx = kv.second;
+                bestMCForRec[pidx] = mcIdx;
             }
 
             // static bool once = true;
@@ -1015,33 +1028,34 @@ void process_chain(TChain *chain,
                 //     continue; // skip zero-momentum
 
                 // First try truth link
+                // if (pREC.Mag() < 1e-6)
+                //     continue; // skip zero-momentum
+
                 MatchResult match;
-                auto it = p2mc.find(ip);
+                auto itBest = bestMCForRec.find(ip);
 
-                if (it != p2mc.end())
-                {
-                    const int mcidx = it->second;
+                if (itBest == bestMCForRec.end())
+                    continue; // this REC neutron is not the unique best one for any MC neutron
 
-                    // ensure mcidx is valid and points to a neutron
-                    if (mcidx >= 0 && mcidx < MCPT.getRows() && MCPT.getInt("pid", mcidx) == 2112)
-                    {
-                        match.mcIndex = mcidx;
-                        TVector3 pMC(MCPT.getFloat("px", mcidx),
-                                     MCPT.getFloat("py", mcidx),
-                                     MCPT.getFloat("pz", mcidx));
-                        match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
+                const int mcidx = itBest->second;
 
-                        if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg && match.angleDeg != 0.0f)
-                            match.mcIndex = -1;
-                    }
-                }
+                if (mcidx < 0 || mcidx >= MCPT.getRows())
+                    continue; // sanity check on matched MC index
+                if (MCPT.getInt("pid", mcidx) != 2112)
+                    continue; // only consider neutrons
 
-                // if (match.mcIndex < 0)
-                // {
-                //     match = match_neutron_rec_to_mc(pREC, MCPT, /*maxAngleDeg=*/maxAngleDeg);
-                // }
-                if (match.mcIndex < 0)
-                    continue; // no good MC match
+                match.mcIndex = mcidx;
+
+                const float mc_px = MCPT.getFloat("px", mcidx);
+                const float mc_py = MCPT.getFloat("py", mcidx);
+                const float mc_pz = MCPT.getFloat("pz", mcidx);
+
+                TVector3 pMC(mc_px, mc_py, mc_pz);
+
+                match.angleDeg = pREC.Angle(pMC) * TMath::RadToDeg();
+
+                if (maxAngleDeg > 0 && match.angleDeg > maxAngleDeg /*&& match.angleDeg != 0.0f*/)
+                    continue; // skip if angle is too large (and not exactly zero, which can happen for low-momentum)
 
                 const float p_rec = pREC.Mag();
                 const float th_rec = pREC.Theta() * TMath::RadToDeg();
@@ -1054,39 +1068,12 @@ void process_chain(TChain *chain,
 
                 N_Vec_temp.SetPxPyPzE(px, py, pz, TMath::Sqrt(p_rec * p_rec + Nmass * Nmass));
 
-                // N_Vec_.push_back(N_Vec_temp);
-                // N_info_temp.push_back(pvx);
-                // N_info_temp.push_back(pvy);
-                // N_info_temp.push_back(pvz);
-                // N_info_temp.push_back(psatus);
-                // N_info_temp.push_back(pchi2pid);
-                // N_info_temp.push_back(pbeta);
-
-                // N_info_temp.push_back(part_Scint_CND_E[ip]);
-                // N_info_temp.push_back(part_Scint_CND_t[ip]);
-                // N_info_temp.push_back(part_Scint_CND_x[ip]);
-                // N_info_temp.push_back(part_Scint_CND_y[ip]);
-                // N_info_temp.push_back(part_Scint_CND_z[ip]);
-
-                // N_info_temp.push_back(part_ScintX_CND_dedx[ip]);
-                // N_info_temp.push_back(part_ScintX_CND_size[ip]);
-                // N_info_temp.push_back(part_ScintX_CND_layermult[ip]);
-
-                // N_info_.push_back(N_info_temp);
-
-                const float mc_px = MCPT.getFloat("px", match.mcIndex);
-                const float mc_py = MCPT.getFloat("py", match.mcIndex);
-                const float mc_pz = MCPT.getFloat("pz", match.mcIndex);
-
-                TVector3 pMC(mc_px, mc_py, mc_pz);
-
                 const float th_mc = pMC.Theta() * TMath::RadToDeg();
                 const float ph_mc = phi_0_360_deg(pMC.Phi());
 
                 const float dth_rec_mc = th_rec - th_mc;
                 const float dph_rec_mc = TVector2::Phi_mpi_pi((ph_rec - ph_mc) * TMath::DegToRad()) * TMath::RadToDeg();
 
-                // Now fill CND-related info if we have an associated row
                 // Now fill CND-related info if we have an associated row
                 const bool fallbackToBestE = false; // recommended: keep strict to kill tails
                 // const double maxCndAngDeg = 15.0;
@@ -1143,7 +1130,7 @@ void process_chain(TChain *chain,
                         << " th_rec=" << th_rec << " ph_rec=" << ph_rec
                         << " |  th_mc=" << th_mc_dbg << " ph_mc=" << ph_mc_dbg
                         << " | angle=" << match.angleDeg
-                        << " | quality=" << p2q[ip]
+                        // << " | quality=" <<
                         << "\n";
                     std::cout
                         << " tag: " << tag
