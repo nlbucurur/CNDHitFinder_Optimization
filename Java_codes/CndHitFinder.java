@@ -200,9 +200,41 @@ public class CndHitFinder {
 
 					// removed for calibration
 					if (flag == 1) {
-						if ((Z_av < ((ccdb.LENGTH[lay - 1] / (-2.)) - 10. * Parameters.Zres[lay - 1]))
-								|| (Z_av > ((ccdb.LENGTH[lay - 1] / 2.) + 10. * Parameters.Zres[lay - 1])))
-							continue;
+						// extra z acceptance on the forward side to loosen the minimum accepted theta
+
+						double zMinCut = -ccdb.LENGTH[lay-1]/2.0 - 10.0*Parameters.Zres[lay-1];
+
+						//layer radius (mm)
+						double radius = ccdb.INNERRADIUS[0] + (lay - 0.5)*ccdb.THICKNESS[0] + (lay-1)*Parameters.LayerGap;
+
+						// old local upper cut in mm
+						double zLocalMaxOld = ccdb.LENGTH[lay-1]/2.0 + 10.0*Parameters.Zres[lay-1];
+
+						// shift from local paddle z
+						double zShift = ((-1.0*ccdb.ZOFFSET[lay-1]) + (ccdb.LENGTH[lay-1]/2.0)) + (ccdb.ZTARGET[0]*10.0);
+
+						// old maximum accepted z wrt the center of the central detector centre
+						double zGlobalMaxOld = zLocalMaxOld + zShift;
+
+						// old minimum theta accepted by thi z cut
+						double thetaMinOld = Math.toDegrees(Math.atan2(radius, zGlobalMaxOld));
+
+						// loosen by 10 degrees the theta cut for the reconstruction to increase statistics
+						double thetaMinNew = thetaMinOld - 10.0;
+
+						// protect against unphysical thetaMinNew
+						if(thetaMinNew < 1.0) thetaMinNew = 1.0;
+
+						// new global maximum z corresponding to the new theta cut
+						double zGlobalMaxNew = radius/Math.tan(thetaMinNew * Math.PI/180.0);
+
+						// extra z needed
+						double zExtra = zGlobalMaxNew - zGlobalMaxOld;
+
+						// new local maximum z cut
+						double zMaxCut = zLocalMaxOld + zExtra;
+
+						if ( (Z_av < zMinCut) || (Z_av > zMaxCut) ) continue; 
 					}
 
 					// Calculate time of hit in paddle and check that it's in a physical window for
